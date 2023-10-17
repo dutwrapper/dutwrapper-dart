@@ -1,8 +1,0 @@
-beautifulsoup4
-certifi
-charset-normalizer
-idna
-lxml
-requests
-soupsieve
-urllib3
