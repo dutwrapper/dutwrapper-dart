@@ -1,10 +1,14 @@
 # DUTWRAPPER CHANGE LOG - DART/FLUTTER
 
+## 0.4.1
+* New function for Account:
+  - Account Information
+
 ## 0.4.0
 * Re-organizing model class.
-* New functions for Account:
+* New function for Account:
   - Subject fee
-* New functions for DutUtils:
+* New function for DutUtils:
   - `getCurrentSchoolYear`: Get current school year in DUT.
 
 ## 0.3.4

@@ -188,6 +188,10 @@ void main() {
     );
     log('');
 
+    await Account.getAccountInformation(sessionId: sessionId)
+        .then((value) => {log(value.data.toString())});
+    log('');
+
     // Logout
     await Account.logout(sessionId: sessionId).then(
       (value) => {

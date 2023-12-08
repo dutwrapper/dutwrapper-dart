@@ -1,7 +1,7 @@
 name: dutwrapper
-description: This library provides wrapper (for this repository - crawl data from a page) for access for some features in DUT Student page - Da Nang University of Technology.
-version: 0.4.0
-homepage:
+description: A unofficial wrapper for quick access some features from DUT Student page - Da Nang University of Technology.
+version: 0.4.1
+homepage: https://github.com/dutwrapper
 
 environment:
   sdk: '>=2.18.1 <3.0.0'
@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   html: ^0.15.0
   http: ^0.13.5
+  collection: ^1.18.0
 
 dev_dependencies:
   flutter_test:

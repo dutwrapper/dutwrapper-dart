@@ -3,9 +3,11 @@ library dutwrapper;
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dutwrapper/utils/html_parser_extension.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
+import 'model/account/account_information.dart';
 import 'model/account/subject_fee.dart';
 import 'model/account/subject_schedule.dart';
 import 'model/account/subject_schedule_study.dart';
@@ -391,6 +393,115 @@ class Account {
       );
     } on ArgumentError {
       ars = ars.clone(requestCode: RequestCode.invalid);
+    } catch (ex) {
+      // print(ex);
+      ars = ars.clone(requestCode: RequestCode.exceptionThrown);
+    }
+
+    return ars;
+  }
+
+  static Future<RequestResult<AccountInformation?>> getAccountInformation({
+    required String sessionId,
+    int timeout = 60,
+  }) async {
+    RequestResult<AccountInformation?> ars =
+        RequestResult<AccountInformation?>(data: null);
+
+    String parseStudentId(String data) {
+      RegExp regex = RegExp(r"Chào (.*) \((.*)\)");
+      data = data.trim();
+      if (regex.hasMatch(data)) {
+        var match1 = regex.firstMatch(data);
+        return match1?.group(2) ?? "";
+      } else {
+        return "";
+      }
+    }
+
+    try {
+      // Header data
+      Map<String, String> header = <String, String>{
+        'cookie': 'ASP.NET_SessionId=$sessionId;',
+      };
+
+      final response = await http
+          .get(Uri.parse("http://sv.dut.udn.vn/PageCaNhan.aspx"),
+              headers: header)
+          .timeout(Duration(seconds: timeout));
+
+      // Main processing
+      var webDoc = parse(response.body);
+      ars.data = AccountInformation(
+        name: webDoc.getElementById("CN_txtHoTen").getValueOrEmpty(),
+        dateOfBirth: webDoc.getElementById("CN_txtNgaySinh").getValueOrEmpty(),
+        birthPlace: webDoc
+            .getElementById("CN_cboNoiSinh")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        gender: webDoc.getElementById("CN_txtGioiTinh").getValueOrEmpty(),
+        ethnicity: webDoc
+            .getElementById("CN_cboDanToc")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        nationality: webDoc
+            .getElementById("CN_cboQuocTich")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        nationalIdCard: webDoc.getElementById("CN_txtSoCMND").getValueOrEmpty(),
+        nationalIdCardIssueDate:
+            webDoc.getElementById("CN_txtNgayCap").getValueOrEmpty(),
+        nationalIdCardIssuePlace: webDoc
+            .getElementById("CN_cboNoiCap")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        citizenIdCard: webDoc.getElementById("CN_txtSoCCCD").getValueOrEmpty(),
+        citizenIdCardIssueDate:
+            webDoc.getElementById("CN_txtNcCCCD").getValueOrEmpty(),
+        religion: webDoc
+            .getElementById("CN_cboTonGiao")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        accountBankId: webDoc.getElementById("CN_txtTKNHang").getValueOrEmpty(),
+        accountBankName:
+            webDoc.getElementById("CN_txtNgHang").getValueOrEmpty(),
+        hIId: webDoc.getElementById("CN_txtSoBHYT").getValueOrEmpty(),
+        hIExpireDate: webDoc.getElementById("CN_txtHanBHYT").getValueOrEmpty(),
+        specialization:
+            webDoc.getElementById("MainContent_CN_txtNganh").getValueOrEmpty(),
+        schoolClass: webDoc.getElementById("CN_txtLop").getValueOrEmpty(),
+        trainingProgramPlan:
+            webDoc.getElementById("MainContent_CN_txtCTDT").getValueOrEmpty(),
+        trainingProgramPlan2:
+            webDoc.getElementById("MainContent_CN_txtCT2").getValueOrEmpty(),
+        schoolEmail: webDoc.getElementById("CN_txtMail1").getValueOrEmpty(),
+        personalEmail: webDoc.getElementById("CN_txtMail2").getValueOrEmpty(),
+        schoolEmailInitPass:
+            webDoc.getElementById("CN_txtMK365").getValueOrEmpty(),
+        facebookUrl: webDoc.getElementById("CN_txtFace").getValueOrEmpty(),
+        phoneNumber: webDoc.getElementById("CN_txtPhone").getValueOrEmpty(),
+        address: webDoc.getElementById("CN_txtCuTru").getValueOrEmpty(),
+        addressFrom: webDoc
+            .getElementById("CN_cboDCCua")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        addressCity: webDoc
+            .getElementById("CN_cboTinhCTru")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        addressDistrict: webDoc
+            .getElementById("CN_cboQuanCTru")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        addressSubDistrict: webDoc
+            .getElementById("CN_divPhuongCTru")
+            .getSelectedOptionInComboBox()
+            .getTextOrEmpty(),
+        // TODO: Implement here!
+        studentId: parseStudentId(
+            webDoc.getElementById("Main_lblHoTen").getTextOrEmpty()),
+      );
+      // TODO: Processing here!
     } catch (ex) {
       // print(ex);
       ars = ars.clone(requestCode: RequestCode.exceptionThrown);
