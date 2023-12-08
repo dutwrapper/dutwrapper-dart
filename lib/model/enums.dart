@@ -5,3 +5,5 @@ enum LessonStatus { unknown, leaving, makeUp }
 enum NewsType { global, subject }
 
 enum RequestCode { unknown, invalid, exceptionThrown, successful, failed }
+
+enum NewsSearchType { byTitle, byContent }

@@ -1,24 +1,28 @@
 library dutwrapper;
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
-import 'model/account_obj.dart';
+import 'model/account/subject_fee.dart';
+import 'model/account/subject_schedule.dart';
+import 'model/account/subject_schedule_study.dart';
 import 'model/enums.dart';
 import 'model/global_variables.dart';
 import 'model/range_class.dart';
 import 'model/request_result.dart';
-import 'model/subject_code_item.dart';
+import 'model/subject_code.dart';
+import 'model/global_variables_url.dart';
 
 class Account {
   static Future<RequestResult> generateSessionID({int timeout = 60}) async {
-    RequestResult ars = const RequestResult();
+    RequestResult ars = RequestResult();
 
     try {
       final response = await http
-          .get(Uri.parse('http://sv.dut.udn.vn/'))
+          .get(Uri.parse(GlobalVariablesUrl.baseLink()))
           .timeout(Duration(seconds: timeout));
 
       // Get session id
@@ -67,7 +71,7 @@ class Account {
       final response = await http
           .get(
             Uri.parse(
-                'http://sv.dut.udn.vn/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code=2010'),
+                GlobalVariablesUrl.subjectScheduleLink(year: 22, semester: 1)),
             headers: header,
           )
           .timeout(Duration(seconds: timeout));
@@ -107,7 +111,7 @@ class Account {
     };
     try {
       await http
-          .post(Uri.parse('http://sv.dut.udn.vn/PageDangNhap.aspx'),
+          .post(Uri.parse(GlobalVariablesUrl.loginLink()),
               headers: header,
               encoding: Encoding.getByName('utf-8'),
               body: postData)
@@ -135,8 +139,7 @@ class Account {
 
     try {
       await http
-          .get(Uri.parse('http://sv.dut.udn.vn/PageLogout.aspx'),
-              headers: header)
+          .get(Uri.parse(GlobalVariablesUrl.logoutLink()), headers: header)
           .timeout(Duration(seconds: timeout));
       RequestResult loginStatus = await isLoggedIn(sessionId: sessionId);
       ars = ars.clone(
@@ -155,26 +158,16 @@ class Account {
     return ars;
   }
 
-  static Future<RequestResult<List<SubjectScheduleItem>>> getSubjectSchedule({
+  static Future<RequestResult<List<SubjectSchedule>>> getSubjectSchedule({
     required String sessionId,
     required int year,
     required int semester,
     int timeout = 60,
   }) async {
-    RequestResult<List<SubjectScheduleItem>> ars =
-        RequestResult<List<SubjectScheduleItem>>(data: []);
-
-    // Create object if null
-    // ars.data ??= [];
+    RequestResult<List<SubjectSchedule>> ars =
+        RequestResult<List<SubjectSchedule>>(data: []);
 
     try {
-      if (semester <= 0 || semester > 3) {
-        throw ArgumentError(
-            'Invalid value (previous value: year: $year, semester: $semester)');
-      }
-      String code =
-          '$year${semester < 3 ? semester : 2}${semester == 3 ? 1 : 0}';
-
       // Header data
       Map<String, String> header = <String, String>{
         'cookie': 'ASP.NET_SessionId=$sessionId;',
@@ -182,8 +175,8 @@ class Account {
 
       final response = await http
           .get(
-              Uri.parse(
-                  'http://sv.dut.udn.vn/WebAjax/evLopHP_Load.aspx?E=TTKBLoad&Code=$code'),
+              Uri.parse(GlobalVariablesUrl.subjectScheduleLink(
+                  year: year, semester: semester)),
               headers: header)
           .timeout(Duration(seconds: timeout));
 
@@ -198,9 +191,9 @@ class Account {
               continue;
             }
 
-            SubjectScheduleItem item = SubjectScheduleItem();
+            SubjectSchedule item = SubjectSchedule();
             // Subject id
-            item.id = SubjectCodeItem.fromString(input: schCell[1].text);
+            item.id = SubjectCode.fromString(input: schCell[1].text);
             // Subject name
             item.name = schCell[2].text;
             // Subject credit
@@ -213,7 +206,7 @@ class Account {
             // Subject study
             if (schCell[7].text.isNotEmpty) {
               schCell[7].text.split('; ').forEach((element) {
-                SubjectStudyItem subjectStudyItem = SubjectStudyItem();
+                SubjectScheduleStudy subjectStudyItem = SubjectScheduleStudy();
                 // Day of week
                 if (element.toUpperCase().contains('CN')) {
                   subjectStudyItem.dayOfWeek = 0;
@@ -263,7 +256,7 @@ class Account {
             }
 
             try {
-              SubjectScheduleItem schItem = ars.data!.firstWhere(
+              SubjectSchedule schItem = ars.data!.firstWhere(
                   (element) => element.id.toString() == schCell[1].text);
               // Set group
               schItem.subjectExam.group = schCell[3].text;
@@ -287,7 +280,8 @@ class Account {
                           .toList()
                           .join('-'));
                     } catch (ex) {
-                      print(ex);
+                      // TODO Error log
+                      log(ex.toString());
                     }
                   } else if (element.contains('Phòng')) {
                     schItem.subjectExam.room = itemSplitted[1];
@@ -309,6 +303,82 @@ class Account {
               // Skip them
               continue;
             }
+          }
+        }
+      }
+
+      ars = ars.clone(
+        statusCode: response.statusCode,
+        requestCode: [200, 204].contains(response.statusCode)
+            ? RequestCode.successful
+            : RequestCode.failed,
+      );
+    } on ArgumentError {
+      ars = ars.clone(requestCode: RequestCode.invalid);
+    } catch (ex) {
+      log(ex.toString());
+      ars = ars.clone(requestCode: RequestCode.exceptionThrown);
+    }
+
+    return ars;
+  }
+
+  static Future<RequestResult<List<SubjectFee>>> getSubjectFee({
+    required String sessionId,
+    required int year,
+    required int semester,
+    int timeout = 60,
+  }) async {
+    RequestResult<List<SubjectFee>> ars =
+        RequestResult<List<SubjectFee>>(data: []);
+
+    try {
+      // Header data
+      Map<String, String> header = <String, String>{
+        'cookie': 'ASP.NET_SessionId=$sessionId;',
+      };
+
+      final response = await http
+          .get(
+              Uri.parse(GlobalVariablesUrl.subjectFeeLink(
+                  year: year, semester: semester)),
+              headers: header)
+          .timeout(Duration(seconds: timeout));
+
+      // Main processing
+      var docSchFee = parse(response.body).getElementById("THocPhi_GridInfo");
+      if (docSchFee != null) {
+        var schRow = docSchFee.getElementsByClassName("GridRow");
+        if (schRow.isNotEmpty) {
+          for (var row in schRow) {
+            var schCell = row.getElementsByClassName('GridCell');
+            if (schCell.length < 10) {
+              continue;
+            }
+
+            SubjectFee item = SubjectFee();
+            // Subject id
+            item.id = SubjectCode.fromString(input: schCell[1].text);
+            // Subject name
+            item.name = schCell[2].text;
+            // Subject credit
+            item.credit = int.tryParse(schCell[3].text) ?? 0;
+            // Subject is high quality
+            item.isHighQuality =
+                schCell[4].attributes['class']?.contains('GridCheck') ?? false;
+            // Subject price
+            item.price =
+                double.tryParse(schCell[5].text.replaceAll(",", "")) ?? 0;
+            // Is debt
+            item.isDebt =
+                schCell[6].attributes['class']?.contains('GridCheck') ?? false;
+            // Is restudy
+            item.isReStudy =
+                schCell[7].attributes['class']?.contains('GridCheck') ?? false;
+            // Payment at
+            item.confirmedPaymentAt = schCell[8].text;
+
+            ars.data!.add(item);
           }
         }
       }

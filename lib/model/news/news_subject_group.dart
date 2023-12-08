@@ -1,7 +1,7 @@
-import 'subject_code_item.dart';
+import '../subject_code.dart';
 
-class SubjectGroupItem {
-  List<SubjectCodeItem> codeList = [];
+class NewsSubjectGroup {
+  List<SubjectCode> codeList = [];
   String subjectName = '';
 
   @override

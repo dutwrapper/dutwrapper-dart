@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dutwrapper/account.dart';
+import 'package:dutwrapper/utils.dart';
+import 'package:dutwrapper/model/custom_clock.dart';
 import 'package:dutwrapper/model/enums.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -37,7 +39,7 @@ void main() {
   test('Get news subject (5 first pages)', () async {
     for (int i = 1; i <= 5; i++) {
       log('======= GET SUBJECT NEWS - PAGE $i =======');
-      final response = await News.getNewsSubject(page: 1);
+      final response = await News.getNewsSubject(page: i);
 
       if (response.isNotEmpty) {
         log('Subject list: ${response.length}');
@@ -94,7 +96,7 @@ void main() {
     // Check is logged in
     await Account.isLoggedIn(sessionId: sessionId).then(
       (value) => {
-        log('\nCheck is logged in'),
+        log('Check is logged in'),
         log('====================================='),
         log('IsLoggedIn (Not logged in code)'),
         log('Status: ${value.requestCode.toString()}'),
@@ -110,7 +112,7 @@ void main() {
     // Check again
     await Account.isLoggedIn(sessionId: sessionId).then(
       (value) {
-        log('\nCheck is logged in (after login)');
+        log('Check is logged in (after login)');
         log('=====================================');
         log('IsLoggedIn (Logged in code)');
         log('Status: ${value.requestCode.toString()}');
@@ -126,10 +128,10 @@ void main() {
 
     // Subject Schedule
     await Account.getSubjectSchedule(
-            sessionId: sessionId, year: 21, semester: 2)
+            sessionId: sessionId, year: 22, semester: 1)
         .then(
       (value) => {
-        log('\nSubject Schedule'),
+        log('Subject Schedule'),
         log('====================================='),
         log('Status: ${value.requestCode.toString()}'),
         log('Status Code: ${value.statusCode}'),
@@ -161,10 +163,35 @@ void main() {
     );
     log('');
 
+    // Subject fee
+    await Account.getSubjectFee(sessionId: sessionId, year: 22, semester: 1)
+        .then(
+      (value) => {
+        log('Subject Fee'),
+        log('====================================='),
+        log('Status: ${value.requestCode.toString()}'),
+        log('Status Code: ${value.statusCode}'),
+        value.data?.forEach(
+          (element) {
+            log('=================');
+            log('Id: ${element.id.toString()}');
+            log('Name: ${element.name}');
+            log('Credit: ${element.credit}');
+            log('IsHighQuality: ${element.isHighQuality}');
+            log('Price: ${element.price}');
+            log('IsDebt: ${element.isDebt}');
+            log('IsReStudy: ${element.isReStudy}');
+            log('PaymentAt: ${element.confirmedPaymentAt}');
+          },
+        ),
+      },
+    );
+    log('');
+
     // Logout
     await Account.logout(sessionId: sessionId).then(
       (value) => {
-        log('\nLogout'),
+        log('Logout'),
         log('====================================='),
         log('Status: ${value.requestCode.toString()}'),
         log('Status Code: ${value.statusCode}')
@@ -175,12 +202,33 @@ void main() {
     // Check again
     await Account.isLoggedIn(sessionId: sessionId).then(
       (value) => {
-        log('\nChecked logged out (if successful, will return failed in this request)'),
+        log('Checked logged out (if successful, will return failed in this request)'),
         log('====================================='),
         log('Status: ${value.requestCode.toString()}'),
         log('Status Code: ${value.statusCode}')
       },
     );
+    log('');
+  });
+
+  test('DUT Utils', () async {
+    log('Get current school year');
+    log('=====================================');
+    var value = await DutUtils.getCurrentSchoolYear();
+    if (value != null) {
+      log('School year: ${value.schoolYear}');
+      log('School year value: ${value.schoolYearVal}');
+      log('Week: ${value.week}');
+    } else {
+      log('Fetch failed!');
+    }
+    log('');
+
+    log('Get current dut lesson');
+    log('=====================================');
+    var value2 = CustomClock.current();
+    log('Current time: ${value2.toString()}');
+    log('Current lesson: ${value2.toDUTLesson()}');
     log('');
   });
 }

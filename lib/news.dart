@@ -4,10 +4,13 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/enums.dart';
+import 'model/news/news_global.dart';
+import 'model/news/news_link.dart';
+import 'model/news/news_subject.dart';
+import 'model/news/news_subject_group.dart';
 import 'model/range_class.dart';
-import 'model/subject_code_item.dart';
-import 'model/news_obj.dart';
-import 'model/subject_group_item.dart';
+import 'model/subject_code.dart';
+import 'model/global_variables_url.dart';
 
 class News {
   static Future<List<NewsGlobal>> _getNews({
@@ -17,7 +20,7 @@ class News {
     final List<NewsGlobal> result = [];
 
     String newsUrl =
-        "http://sv.dut.udn.vn/WebAjax/evLopHP_Load.aspx?E=${(newsType == NewsType.global) ? 'CTRTBSV' : 'CTRTBGV'}&PAGETB=$page&COL=TieuDe&NAME=&TAB=0";
+        GlobalVariablesUrl.newsLink(newsType: newsType, page: page);
 
     final response = await http.Client().get(Uri.parse(newsUrl));
     if (response.statusCode == 200) {
@@ -49,7 +52,7 @@ class News {
               .forEach((element) {
             if (contentTemp.contains(element.text)) {
               position += contentTemp.indexOf(element.text);
-              NewsLinkItem newsLink = NewsLinkItem(
+              NewsLink newsLink = NewsLink(
                   text: element.text,
                   position: position,
                   url: element.attributes['href']!);
@@ -134,24 +137,24 @@ class News {
           if (affectedClassIndex > -1) {
             var affectedClass = item.affectedClasses[affectedClassIndex];
             affectedClass.codeList.add(
-              SubjectCodeItem.fromTwoLastDigit(
+              SubjectCode.fromTwoLastDigit(
                 studentYearId: classId.split('.')[0],
                 classId: classId.split('.')[1],
               ),
             );
           } else {
-            SubjectGroupItem subjectGroupItem = SubjectGroupItem();
+            NewsSubjectGroup subjectGroupItem = NewsSubjectGroup();
             subjectGroupItem.subjectName = className;
             try {
               subjectGroupItem.codeList.add(
-                SubjectCodeItem.fromTwoLastDigit(
+                SubjectCode.fromTwoLastDigit(
                   studentYearId: classId.split('.')[0],
                   classId: classId.split('.')[1],
                 ),
               );
             } catch (ex) {
               subjectGroupItem.codeList.add(
-                SubjectCodeItem.fromTwoLastDigit(
+                SubjectCode.fromTwoLastDigit(
                   studentYearId: classId.substring(0, 2),
                   classId: classId.substring(2),
                 ),

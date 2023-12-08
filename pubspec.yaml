@@ -1,6 +1,6 @@
 name: dutwrapper
 description: This library provides wrapper (for this repository - crawl data from a page) for access for some features in DUT Student page - Da Nang University of Technology.
-version: 0.3.4
+version: 0.4.0
 homepage:
 
 environment:

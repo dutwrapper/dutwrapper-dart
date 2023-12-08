@@ -1,5 +1,5 @@
 // Details in http://daotao.dut.udn.vn/download2/Guide_Dangkyhoc.pdf, page 28
-class SubjectCodeItem {
+class SubjectCode {
   // Area 1
   int subjectId = 0;
   // Area 2
@@ -9,15 +9,18 @@ class SubjectCodeItem {
   // Area 4
   String classId = '';
 
-  SubjectCodeItem();
-  SubjectCodeItem.fromTwoLastDigit(
-      {required this.studentYearId, required this.classId});
-  SubjectCodeItem.from(
-      {required this.subjectId,
-      required this.schoolYearId,
-      required this.studentYearId,
-      required this.classId});
-  SubjectCodeItem.fromString({required String input}) {
+  SubjectCode();
+  SubjectCode.fromTwoLastDigit({
+    required this.studentYearId,
+    required this.classId,
+  });
+  SubjectCode.from({
+    required this.subjectId,
+    required this.schoolYearId,
+    required this.studentYearId,
+    required this.classId,
+  });
+  SubjectCode.fromString({required String input}) {
     if (input.isNotEmpty) {
       final splitted = input.split('.');
       if (splitted.length == 4) {
@@ -38,11 +41,11 @@ class SubjectCodeItem {
     return '$studentYearId.$classId';
   }
 
-  bool equalsTwoLastDigits(SubjectCodeItem item) {
+  bool equalsTwoLastDigits(SubjectCode item) {
     return item.classId == classId && item.studentYearId == studentYearId;
   }
 
-  bool equals(SubjectCodeItem item) {
+  bool equals(SubjectCode item) {
     return item.subjectId == subjectId &&
         item.schoolYearId == schoolYearId &&
         equalsTwoLastDigits(item);

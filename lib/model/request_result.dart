@@ -4,9 +4,9 @@ class RequestResult<T> {
   final RequestCode requestCode;
   final int statusCode;
   final String sessionId;
-  final T? data;
+  T? data;
 
-  const RequestResult({
+  RequestResult({
     this.requestCode = RequestCode.unknown,
     this.statusCode = 0,
     this.sessionId = '',
