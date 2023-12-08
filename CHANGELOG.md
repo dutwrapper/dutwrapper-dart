@@ -1,4 +1,11 @@
-# DUT WRAPPER CHANGE LOG - DART
+# DUTWRAPPER CHANGE LOG - DART/FLUTTER
+
+## 0.4.0
+* Re-organizing model class.
+* New functions for Account:
+  - Subject fee
+* New functions for DutUtils:
+  - `getCurrentSchoolYear`: Get current school year in DUT.
 
 ## 0.3.4
 * Fixed a issue in sv.udn.vn in subject news cause return empty list instead of throwing exceptions.
