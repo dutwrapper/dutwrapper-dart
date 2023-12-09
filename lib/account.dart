@@ -628,7 +628,7 @@ class Account {
           schoolYear: gridCell[1].getTextOrEmpty(),
           isExtendedSemester: gridCell[2].isGridChecked(),
           // TODO: Convert to subject code
-          id: gridCell[3].getTextOrEmpty(),
+          id: SubjectCode.fromString(input: gridCell[3].getTextOrEmpty()),
           name: gridCell[4].getTextOrEmpty(),
           credit: double.tryParse(gridCell[5].getTextOrEmpty()) ?? 0,
           pointFormula: gridCell[6].getText(),
@@ -661,7 +661,7 @@ class Account {
             : RequestCode.failed,
       );
     } catch (ex) {
-      // print(ex);
+      log(ex.toString());
       ars = ars.clone(requestCode: RequestCode.exceptionThrown);
     }
     return ars;

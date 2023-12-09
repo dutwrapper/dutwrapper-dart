@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import '../subject_code.dart';
+
 class SubjectResult {
   final int index;
   final String schoolYear;
   final bool isExtendedSemester;
-  final String id;
+  final SubjectCode id;
   final String name;
   final double credit;
   final String? pointFormula;
@@ -45,7 +47,7 @@ class SubjectResult {
     int? index,
     String? schoolYear,
     bool? isExtendedSemester,
-    String? id,
+    SubjectCode? id,
     String? name,
     double? credit,
     String? pointFormula,
@@ -89,7 +91,7 @@ class SubjectResult {
     result.addAll({'index': index});
     result.addAll({'schoolYear': schoolYear});
     result.addAll({'isExtendedSemester': isExtendedSemester});
-    result.addAll({'id': id});
+    result.addAll({'id': id.toMap()});
     result.addAll({'name': name});
     result.addAll({'credit': credit});
     if (pointFormula != null) {
@@ -135,7 +137,7 @@ class SubjectResult {
       index: map['index']?.toInt() ?? 0,
       schoolYear: map['schoolYear'] ?? '',
       isExtendedSemester: map['isExtendedSemester'] ?? false,
-      id: map['id'] ?? '',
+      id: SubjectCode.fromMap(map['id']),
       name: map['name'] ?? '',
       credit: map['credit']?.toDouble() ?? 0.0,
       pointFormula: map['pointFormula'],
