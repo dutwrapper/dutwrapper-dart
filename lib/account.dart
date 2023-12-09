@@ -210,26 +210,54 @@ class Account {
             // Lecturer
             item.lecturerName = schCell[6].text;
             // Subject study
+            // TODO: Will be replaced with following regex after spliited by "; "
+            // (Thứ [2-7]|CN),([0-9]{1,2}-[0-9]{1,2}),(.*)
             if (schCell[7].text.isNotEmpty) {
+              RegExp regex =
+                  RegExp("(Thứ [2-7]|CN),([0-9]{1,2})-([0-9]{1,2}),(.*)");
               schCell[7].text.split('; ').forEach((element) {
-                SubjectScheduleStudy subjectStudyItem = SubjectScheduleStudy();
-                // Day of week
-                if (element.toUpperCase().contains('CN')) {
-                  subjectStudyItem.dayOfWeek = 1;
-                } else {
-                  subjectStudyItem.dayOfWeek =
-                      int.tryParse(element.split(',')[0].split(' ')[1]) ?? 1;
+                if (regex.hasMatch(element)) {
+                  item.subjectStudy.subjectStudyList.add(
+                    SubjectScheduleStudy.from(
+                      dayOfWeek: regex.firstMatch(element)?.group(1) == null
+                          ? 1
+                          : regex.firstMatch(element)?.group(1) == "CN"
+                              ? 1
+                              : int.parse(regex
+                                  .firstMatch(element)!
+                                  .group(1)!
+                                  .split(' ')[1]),
+                      lesson: RangeInt(
+                        start: int.tryParse(
+                                regex.firstMatch(element)?.group(2) ?? "") ??
+                            0,
+                        end: int.tryParse(
+                                regex.firstMatch(element)?.group(3) ?? "") ??
+                            0,
+                      ),
+                      room: regex.firstMatch(element)?.group(4) ?? "",
+                    ),
+                  );
                 }
-                // Lesson
-                subjectStudyItem.lesson = RangeInt(
-                  start:
-                      int.tryParse(element.split(',')[1].split('-')[0]) ?? -1,
-                  end: int.tryParse(element.split(',')[1].split('-')[1]) ?? -1,
-                );
-                // Room
-                subjectStudyItem.room = element.split(',')[2];
+
+                // SubjectScheduleStudy subjectStudyItem = SubjectScheduleStudy();
+                // // Day of week
+                // if (element.toUpperCase().contains('CN')) {
+                //   subjectStudyItem.dayOfWeek = 1;
+                // } else {
+                //   subjectStudyItem.dayOfWeek =
+                //       int.tryParse(element.split(',')[0].split(' ')[1]) ?? 1;
+                // }
+                // // Lesson
+                // subjectStudyItem.lesson = RangeInt(
+                //   start:
+                //       int.tryParse(element.split(',')[1].split('-')[0]) ?? -1,
+                //   end: int.tryParse(element.split(',')[1].split('-')[1]) ?? -1,
+                // );
+                // // Room
+                // subjectStudyItem.room = element.split(',')[2];
                 // Add to item
-                item.subjectStudy.subjectStudyList.add(subjectStudyItem);
+                // item.subjectStudy.subjectStudyList.add(subjectStudyItem);
               });
             }
             // Processing with Week list
@@ -263,6 +291,10 @@ class Account {
             try {
               SubjectSchedule schItem = ars.data!.firstWhere(
                   (element) => element.id.toString() == schCell[1].text);
+
+              // TODO: Will be replaced with following regex:
+              // Ngày: ([0-9]{2}\/[0-9]{2}\/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)
+
               // Set group
               schItem.subjectExam.group = schCell[3].text;
               // Is global

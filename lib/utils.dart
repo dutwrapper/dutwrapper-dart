@@ -3,6 +3,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/dut_school_year.dart';
+import 'model/global_variables_url.dart';
 
 class DutUtils {
   static int getCurrentTimeUnixMilliseconds() {
@@ -12,7 +13,7 @@ class DutUtils {
   static Future<DutSchoolYear?> getCurrentSchoolYear({int timeout = 60}) async {
     try {
       final response = await http
-          .get(Uri.parse("http://dut.udn.vn/Lichtuan"))
+          .get(Uri.parse(GlobalVariablesUrl.dutSchedulePage()))
           .timeout(Duration(seconds: timeout));
 
       // Main processing

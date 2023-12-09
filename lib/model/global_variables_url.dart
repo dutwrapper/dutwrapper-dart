@@ -41,4 +41,6 @@ class GlobalVariablesUrl {
   static String accountInformationLink() => "${baseLink()}/PageCaNhan.aspx";
 
   static String trainingStatusLink() => "${baseLink()}/PageKQRL.aspx";
+
+  static String dutSchedulePage() => "http://dut.udn.vn/Lichtuan";
 }

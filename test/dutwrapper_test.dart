@@ -128,7 +128,7 @@ void main() {
 
     // Subject Schedule
     await Account.getSubjectSchedule(
-            sessionId: sessionId, year: 22, semester: 1)
+            sessionId: sessionId, year: 19, semester: 2)
         .then(
       (value) => {
         log('Subject Schedule'),
