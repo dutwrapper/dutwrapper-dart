@@ -51,7 +51,8 @@ class DutUtils {
         }
       }
 
-      if (schYear != null && schYearVal != null && week != null) {
+      // schYearVal != null
+      if (schYear != null && week != null) {
         result = DutSchoolYear(
           schoolYear: schYear,
           schoolYearVal: schYearVal,

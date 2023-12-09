@@ -201,8 +201,7 @@ class Account {
             // Subject credit
             item.credit = int.tryParse(schCell[3].text) ?? 0;
             // Subject is high quality
-            item.isHighQuality =
-                schCell[5].attributes['class']?.contains('GridCheck') ?? false;
+            item.isHighQuality = schCell[5].isGridChecked();
             // Lecturer
             item.lecturerName = schCell[6].text;
             // Subject study
@@ -211,11 +210,10 @@ class Account {
                 SubjectScheduleStudy subjectStudyItem = SubjectScheduleStudy();
                 // Day of week
                 if (element.toUpperCase().contains('CN')) {
-                  subjectStudyItem.dayOfWeek = 0;
+                  subjectStudyItem.dayOfWeek = 1;
                 } else {
                   subjectStudyItem.dayOfWeek =
-                      (int.tryParse(element.split(',')[0].split(' ')[1]) ?? 1) -
-                          1;
+                      int.tryParse(element.split(',')[0].split(' ')[1]) ?? 1;
                 }
                 // Lesson
                 subjectStudyItem.lesson = RangeInt(
@@ -263,9 +261,7 @@ class Account {
               // Set group
               schItem.subjectExam.group = schCell[3].text;
               // Is global
-              schItem.subjectExam.isGlobal =
-                  schCell[4].attributes['class']?.contains('GridCheck') ??
-                      false;
+              schItem.subjectExam.isGlobal = schCell[4].isGridChecked();
               // Date + room
               final temp = schCell[5].text;
               // Use above to split date and room, then add back to subject schedule item.
@@ -358,7 +354,7 @@ class Account {
               continue;
             }
 
-            SubjectFee item = SubjectFee();
+            SubjectFee item = SubjectFee.createDefault();
             // Subject id
             item.id = SubjectCode.fromString(input: schCell[1].text);
             // Subject name
@@ -366,17 +362,14 @@ class Account {
             // Subject credit
             item.credit = int.tryParse(schCell[3].text) ?? 0;
             // Subject is high quality
-            item.isHighQuality =
-                schCell[4].attributes['class']?.contains('GridCheck') ?? false;
+            item.isHighQuality = schCell[4].isGridChecked();
             // Subject price
             item.price =
                 double.tryParse(schCell[5].text.replaceAll(",", "")) ?? 0;
             // Is debt
-            item.isDebt =
-                schCell[6].attributes['class']?.contains('GridCheck') ?? false;
+            item.isDebt = schCell[6].isGridChecked();
             // Is restudy
-            item.isReStudy =
-                schCell[7].attributes['class']?.contains('GridCheck') ?? false;
+            item.isReStudy = schCell[7].isGridChecked();
             // Payment at
             item.confirmedPaymentAt = schCell[8].text;
 
