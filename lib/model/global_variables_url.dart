@@ -37,4 +37,8 @@ class GlobalVariablesUrl {
   static String loginLink() => "${baseLink()}/PageDangNhap.aspx";
 
   static String logoutLink() => "${baseLink()}/PageLogout.aspx";
+
+  static String accountInformationLink() => "${baseLink()}/PageCaNhan.aspx";
+
+  static String trainingStatusLink() => "${baseLink()}/PageKQRL.aspx";
 }

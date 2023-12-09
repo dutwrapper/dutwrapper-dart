@@ -1,6 +1,6 @@
 name: dutwrapper
 description: A unofficial wrapper for quick access some features from DUT Student page - Da Nang University of Technology.
-version: 0.4.1
+version: 0.4.2
 homepage: https://github.com/dutwrapper
 
 environment:

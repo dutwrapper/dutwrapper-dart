@@ -1,5 +1,9 @@
 # DUTWRAPPER CHANGE LOG - DART/FLUTTER
 
+## 0.4.2
+* New function for Account:
+  - Account training status
+
 ## 0.4.1
 * New function for Account:
   - Account Information

@@ -11,11 +11,19 @@ extension ElementParser on Element? {
   }
 
   String? getText() {
-    return this?.text;
+    return (this == null)
+        ? null
+        : (this!.text.isEmpty)
+            ? null
+            : this!.text;
   }
 
   String getTextOrEmpty() {
     return getText() ?? "";
+  }
+
+  bool isTextEmpty() {
+    return getTextOrEmpty().isEmpty;
   }
 
   Element? getSelectedOptionInComboBox() {
@@ -42,5 +50,9 @@ extension ElementParser on Element? {
 
   bool isSelected() {
     return this?.attributes.containsKey("selected") ?? false;
+  }
+
+  Document? convertToDocument() {
+    return (this != null) ? Document.html(this!.innerHtml) : null;
   }
 }

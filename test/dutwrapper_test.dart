@@ -188,7 +188,17 @@ void main() {
     );
     log('');
 
+    // Account information
+    log('Account Information');
+    log('=====================================');
     await Account.getAccountInformation(sessionId: sessionId)
+        .then((value) => {log(value.data.toString())});
+    log('');
+
+    // Account training status
+    log('Account training status');
+    log('=====================================');
+    await Account.getAccountTrainingStatus(sessionId: sessionId)
         .then((value) => {log(value.data.toString())});
     log('');
 

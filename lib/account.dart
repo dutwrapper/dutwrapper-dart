@@ -3,14 +3,19 @@ library dutwrapper;
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
+import 'package:dutwrapper/model/account/account_training_status.dart';
 import 'package:dutwrapper/utils/html_parser_extension.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/account/account_information.dart';
+import 'model/account/graduate_status.dart';
 import 'model/account/subject_fee.dart';
+import 'model/account/subject_result.dart';
 import 'model/account/subject_schedule.dart';
 import 'model/account/subject_schedule_study.dart';
+import 'model/account/training_summary.dart';
 import 'model/enums.dart';
 import 'model/global_variables.dart';
 import 'model/range_class.dart';
@@ -419,8 +424,10 @@ class Account {
       };
 
       final response = await http
-          .get(Uri.parse("http://sv.dut.udn.vn/PageCaNhan.aspx"),
-              headers: header)
+          .get(
+            Uri.parse(GlobalVariablesUrl.accountInformationLink()),
+            headers: header,
+          )
           .timeout(Duration(seconds: timeout));
 
       // Main processing
@@ -500,6 +507,163 @@ class Account {
       ars = ars.clone(requestCode: RequestCode.exceptionThrown);
     }
 
+    return ars;
+  }
+
+  static Future<RequestResult<AccountTrainingStatus>> getAccountTrainingStatus({
+    required String sessionId,
+    int timeout = 60,
+  }) async {
+    RequestResult<AccountTrainingStatus> ars =
+        RequestResult<AccountTrainingStatus>(data: null);
+
+    try {
+      // Header data
+      Map<String, String> header = <String, String>{
+        'cookie': 'ASP.NET_SessionId=$sessionId;',
+      };
+
+      final response = await http
+          .get(
+            Uri.parse(GlobalVariablesUrl.trainingStatusLink()),
+            headers: header,
+          )
+          .timeout(Duration(seconds: timeout));
+
+      // Main processing
+      var webDoc = parse(response.body);
+
+      // Training summary
+      TrainingSummary trainSum = TrainingSummary(
+        schoolYearStart: "",
+        schoolYearCurrent: "",
+        creditCollected: 0,
+        avgTrainingScore4: 0,
+        avgSocial: 0,
+      );
+      var webDocTrainSum = webDoc
+          .getElementById("KQRLGridTH")
+          ?.getElementsByClassName("GridRow");
+      if (webDocTrainSum == null) {
+        throw Exception("No data for training summary");
+      }
+
+      for (var gridRow in webDocTrainSum) {
+        var gridCell = gridRow.getElementsByClassName("GridCell");
+        if (gridCell[0].isTextEmpty() ||
+            gridCell[gridCell.length - 1].isTextEmpty() ||
+            gridCell[gridCell.length - 2].isTextEmpty() ||
+            gridCell[gridCell.length - 3].isTextEmpty()) {
+          continue;
+        }
+
+        trainSum = trainSum.copyWith(
+          schoolYearStart: (trainSum.schoolYearStart.isEmpty)
+              ? gridCell[0].getTextOrEmpty()
+              : trainSum.schoolYearStart,
+          schoolYearCurrent: gridCell[0].getTextOrEmpty(),
+          creditCollected:
+              double.tryParse(gridCell[gridCell.length - 3].getTextOrEmpty()) ??
+                  0,
+          avgTrainingScore4:
+              double.tryParse(gridCell[gridCell.length - 2].getTextOrEmpty()) ??
+                  0,
+          avgSocial:
+              double.tryParse(gridCell[gridCell.length - 1].getTextOrEmpty()) ??
+                  0,
+        );
+      }
+
+      // Gradudate status
+      var webDocGraduateStat =
+          webDoc.getElementById("KQRLdvCc").convertToDocument();
+      if (webDocGraduateStat == null) {
+        throw Exception("No data for gradudate status");
+      }
+      GraduateStatus gradStat = GraduateStatus(
+        hasSigGDTC:
+            webDocGraduateStat.getElementById("KQRL_chkGDTC").isChecked(),
+        hasSigGDQP: webDocGraduateStat.getElementById("KQRL_chkQP").isChecked(),
+        hasSigEnglish:
+            webDocGraduateStat.getElementById("KQRL_chkCCNN").isChecked(),
+        hasSigIT: webDocGraduateStat.getElementById("KQRL_chkCCTH").isChecked(),
+        hasQualifiedGraduate:
+            webDocGraduateStat.getElementById("KQRL_chkCNTN").isChecked(),
+        info1: webDocGraduateStat
+            .getElementById("KQRL_txtKT")
+            .getTextOrEmpty()
+            .trim(),
+        info2: webDocGraduateStat
+            .getElementById("KQRL_txtKL")
+            .getTextOrEmpty()
+            .trim(),
+        info3: webDocGraduateStat
+            .getElementById("KQRL_txtInfo")
+            .getTextOrEmpty()
+            .trim(),
+        approveGraduateProcessInfo: webDocGraduateStat
+            .getElementById("KQRL_txtCNTN")
+            .getTextOrEmpty()
+            .trim(),
+      );
+
+      // Subject result list
+      var webDocSubjectResult = webDoc
+          .getElementById("KQRL_divContent")
+          .convertToDocument()
+          ?.getElementById("KQRLGridKQHT")
+          ?.getElementsByClassName("GridRow");
+      if (webDocSubjectResult == null) {
+        throw Exception("No data for subject result list");
+      }
+      List<SubjectResult> subjectResultList = [];
+      for (var row in webDocSubjectResult.reversed) {
+        var gridCell = row.getElementsByClassName('GridCell');
+        // if (gridCell.length < 10) {
+        //   continue;
+        // }
+
+        subjectResultList.add(SubjectResult(
+          index: int.tryParse(gridCell[0].getTextOrEmpty()) ?? 0,
+          schoolYear: gridCell[1].getTextOrEmpty(),
+          isExtendedSemester: gridCell[2].isGridChecked(),
+          // TODO: Convert to subject code
+          id: gridCell[3].getTextOrEmpty(),
+          name: gridCell[4].getTextOrEmpty(),
+          credit: double.tryParse(gridCell[5].getTextOrEmpty()) ?? 0,
+          pointFormula: gridCell[6].getText(),
+          pointBT: double.tryParse(gridCell[7].getTextOrEmpty()),
+          pointBV: double.tryParse(gridCell[8].getTextOrEmpty()),
+          pointCC: double.tryParse(gridCell[9].getTextOrEmpty()),
+          pointCK: double.tryParse(gridCell[10].getTextOrEmpty()),
+          pointGK: double.tryParse(gridCell[11].getTextOrEmpty()),
+          pointQT: double.tryParse(gridCell[12].getTextOrEmpty()),
+          pointTH: double.tryParse(gridCell[13].getTextOrEmpty()),
+          resultT10: double.tryParse(gridCell[14].getTextOrEmpty()),
+          resultT4: double.tryParse(gridCell[15].getTextOrEmpty()),
+          resultByCharacter: gridCell[16].getText(),
+          isReStudy: subjectResultList.firstWhereOrNull((element) =>
+                  element.name.toLowerCase() ==
+                  gridCell[4].getTextOrEmpty().toLowerCase()) !=
+              null,
+        ));
+      }
+
+      ars = ars.clone(
+        data: AccountTrainingStatus(
+          trainingSummary: trainSum,
+          graduateStatus: gradStat,
+          subjectResultList: subjectResultList,
+        ),
+        statusCode: response.statusCode,
+        requestCode: [200, 204].contains(response.statusCode)
+            ? RequestCode.successful
+            : RequestCode.failed,
+      );
+    } catch (ex) {
+      // print(ex);
+      ars = ars.clone(requestCode: RequestCode.exceptionThrown);
+    }
     return ars;
   }
 }
