@@ -289,52 +289,74 @@ class Account {
             }
 
             try {
-              SubjectSchedule schItem = ars.data!.firstWhere(
-                  (element) => element.id.toString() == schCell[1].text);
+              SubjectSchedule schItem = ars.data!.firstWhere((element) =>
+                  element.id == SubjectCode.fromString(input: schCell[1].text));
 
               // TODO: Will be replaced with following regex:
               // Ngày: ([0-9]{2}\/[0-9]{2}\/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)
 
-              // Set group
-              schItem.subjectExam.group = schCell[3].text;
-              // Is global
-              schItem.subjectExam.isGlobal = schCell[4].isGridChecked();
               // Date + room
-              final temp = schCell[5].text;
               // Use above to split date and room, then add back to subject schedule item.
-              DateTime? dateTime;
-              temp.split(', ').forEach((element) {
-                List<String> itemSplitted = element.split(": ");
-                if (itemSplitted.length >= 2) {
-                  // Area for day
-                  if (element.contains('Ngày')) {
-                    try {
-                      dateTime = DateTime.parse(itemSplitted[1]
-                          .split('/')
-                          .reversed
-                          .toList()
-                          .join('-'));
-                    } catch (ex) {
-                      // TODO Error log
-                      log(ex.toString());
-                    }
-                  } else if (element.contains('Phòng')) {
-                    schItem.subjectExam.room = itemSplitted[1];
-                  } else if (element.contains('Giờ')) {
-                    List<String> timeSplitted = itemSplitted[1].split('h');
-                    if (timeSplitted.isNotEmpty) {
-                      dateTime?.add(
-                          Duration(hours: int.tryParse(timeSplitted[0]) ?? 0));
-                    }
-                    if (timeSplitted.length > 1) {
-                      dateTime?.add(Duration(
-                          minutes: int.tryParse(timeSplitted[1]) ?? 0));
-                    }
-                  }
+              // DateTime? dateTime;
+              // temp.split(', ').forEach((element) {
+              //   List<String> itemSplitted = element.split(": ");
+              //   if (itemSplitted.length >= 2) {
+              //     // Area for day
+              //     if (element.contains('Ngày')) {
+              //       try {
+              //         dateTime = DateTime.parse(itemSplitted[1]
+              //             .split('/')
+              //             .reversed
+              //             .toList()
+              //             .join('-'));
+              //       } catch (ex) {
+              //         // TODO Error log
+              //         log(ex.toString());
+              //       }
+              //     } else if (element.contains('Phòng')) {
+              //       schItem.subjectExam.room = itemSplitted[1];
+              //     } else if (element.contains('Giờ')) {
+              //       List<String> timeSplitted = itemSplitted[1].split('h');
+              //       if (timeSplitted.isNotEmpty) {
+              //         dateTime?.add(
+              //             Duration(hours: int.tryParse(timeSplitted[0]) ?? 0));
+              //       }
+              //       if (timeSplitted.length > 1) {
+              //         dateTime?.add(Duration(
+              //             minutes: int.tryParse(timeSplitted[1]) ?? 0));
+              //       }
+              //     }
+              //   }
+              // });
+              // schItem.subjectExam.date = dateTime?.millisecondsSinceEpoch ?? 0;
+              if (schCell[5].text.isNotEmpty) {
+                RegExp regex = RegExp(
+                    r"Ngày: ([0-9]{2}\/[0-9]{2}\/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)");
+                if (regex.hasMatch(schCell[5].text)) {
+                  var dateSplit =
+                      regex.firstMatch(schCell[5].text)!.group(1)!.split("/");
+                  var timeSplit = regex.firstMatch(schCell[5].text)!.group(3)!;
+
+                  DateTime dt = DateTime.parse(
+                      "${dateSplit[2]}-${dateSplit[1]}-${dateSplit[0]}");
+                  dt = dt.add(Duration(
+                    hours: int.parse(timeSplit.split("h")[0]),
+                    minutes: timeSplit.split("h").length == 2
+                        ? int.parse(timeSplit.split("h")[1])
+                        : 0,
+                  ));
+
+                  schItem.subjectExam.date = dt.millisecondsSinceEpoch;
+                  schItem.subjectExam.room =
+                      regex.firstMatch(schCell[5].text)?.group(2) ?? "";
+                  // Is global - Get from root element
+                  schItem.subjectExam.isGlobal = schCell[4].isGridChecked();
+                  // Group - Get from root element
+                  schItem.subjectExam.group = schCell[3].text;
                 }
-              });
-              schItem.subjectExam.date = dateTime?.millisecondsSinceEpoch ?? 0;
+              }
             } catch (ex) {
+              log(ex.toString());
               // Skip them
               continue;
             }
