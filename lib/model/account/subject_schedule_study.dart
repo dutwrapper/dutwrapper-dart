@@ -72,4 +72,37 @@ class SubjectScheduleStudy {
 class SubjectScheduleStudyList {
   List<SubjectScheduleStudy> subjectStudyList = [];
   List<RangeInt> weekList = [];
+
+  SubjectScheduleStudyList.createDefault()
+      : subjectStudyList = [],
+        weekList = [];
+
+  SubjectScheduleStudyList({
+    required this.subjectStudyList,
+    required this.weekList,
+  });
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+
+    result.addAll(
+        {'subjectStudyList': subjectStudyList.map((x) => x.toMap()).toList()});
+    result.addAll({'weekList': weekList.map((x) => x.toMap()).toList()});
+
+    return result;
+  }
+
+  factory SubjectScheduleStudyList.fromMap(Map<String, dynamic> map) {
+    return SubjectScheduleStudyList(
+      subjectStudyList: List<SubjectScheduleStudy>.from(
+          map['subjectStudyList']?.map((x) => SubjectScheduleStudy.fromMap(x))),
+      weekList:
+          List<RangeInt>.from(map['weekList']?.map((x) => RangeInt.fromMap(x))),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SubjectScheduleStudyList.fromJson(String source) =>
+      SubjectScheduleStudyList.fromMap(json.decode(source));
 }

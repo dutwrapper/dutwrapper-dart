@@ -198,7 +198,7 @@ class Account {
               continue;
             }
 
-            SubjectSchedule item = SubjectSchedule();
+            SubjectSchedule item = SubjectSchedule.createDefault();
             // Subject id
             item.id = SubjectCode.fromString(input: schCell[1].text);
             // Subject name

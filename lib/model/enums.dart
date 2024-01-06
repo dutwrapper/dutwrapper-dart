@@ -1,9 +1,45 @@
-enum LecturerGender { male, female, other }
+enum LecturerGender {
+  male(0),
+  female(1),
+  other(2);
 
-enum LessonStatus { unknown, leaving, makeUp }
+  const LecturerGender(this.value);
+  final int value;
+}
 
-enum NewsType { global, subject }
+enum LessonStatus {
+  unknown(-1),
+  leaving(0),
+  makeUp(1);
 
-enum RequestCode { unknown, invalid, exceptionThrown, successful, failed }
+  const LessonStatus(this.value);
+  final int value;
+}
 
-enum NewsSearchType { byTitle, byContent }
+enum NewsType {
+  unknown(-1),
+  global(0),
+  subject(1);
+
+  const NewsType(this.value);
+  final int value;
+}
+
+enum RequestCode {
+  invalid(-3),
+  exceptionThrown(-2),
+  unknown(-1),
+  successful(0),
+  failed(1);
+
+  const RequestCode(this.value);
+  final int value;
+}
+
+enum NewsSearchType {
+  byTitle(0),
+  byContent(1);
+
+  const NewsSearchType(this.value);
+  final int value;
+}
