@@ -17,6 +17,7 @@ class SubjectResult {
   final double? pointGK;
   final double? pointQT;
   final double? pointTH;
+  final double? pointTT;
   final double? resultT4;
   final double? resultT10;
   final String? resultByCharacter;
@@ -37,6 +38,7 @@ class SubjectResult {
     this.pointGK,
     this.pointQT,
     this.pointTH,
+    this.pointTT,
     this.resultT4,
     this.resultT10,
     this.resultByCharacter,
@@ -58,6 +60,7 @@ class SubjectResult {
     double? pointGK,
     double? pointQT,
     double? pointTH,
+    double? pointTT,
     double? resultT4,
     double? resultT10,
     String? resultByCharacter,
@@ -78,6 +81,7 @@ class SubjectResult {
       pointGK: pointGK ?? this.pointGK,
       pointQT: pointQT ?? this.pointQT,
       pointTH: pointTH ?? this.pointTH,
+      pointTT: pointTT ?? this.pointTT,
       resultT4: resultT4 ?? this.resultT4,
       resultT10: resultT10 ?? this.resultT10,
       resultByCharacter: resultByCharacter ?? this.resultByCharacter,
@@ -118,6 +122,9 @@ class SubjectResult {
     if (pointTH != null) {
       result.addAll({'pointTH': pointTH});
     }
+    if (pointTT != null) {
+      result.addAll({'pointTT': pointTT});
+    }
     if (resultT4 != null) {
       result.addAll({'resultT4': resultT4});
     }
@@ -148,6 +155,7 @@ class SubjectResult {
       pointGK: map['pointGK']?.toDouble(),
       pointQT: map['pointQT']?.toDouble(),
       pointTH: map['pointTH']?.toDouble(),
+      pointTT: map['pointTT']?.toDouble(),
       resultT4: map['resultT4']?.toDouble(),
       resultT10: map['resultT10']?.toDouble(),
       resultByCharacter: map['resultByCharacter'],
@@ -162,7 +170,7 @@ class SubjectResult {
 
   @override
   String toString() {
-    return 'SubjectResult(index: $index, schoolYear: $schoolYear, isExtendedSemester: $isExtendedSemester, id: $id, name: $name, credit: $credit, pointFormula: $pointFormula, pointBT: $pointBT, pointBV: $pointBV, pointCC: $pointCC, pointCK: $pointCK, pointGK: $pointGK, pointQT: $pointQT, pointTH: $pointTH, resultT4: $resultT4, resultT10: $resultT10, resultByCharacter: $resultByCharacter, isReStudy: $isReStudy)';
+    return 'SubjectResult(index: $index, schoolYear: $schoolYear, isExtendedSemester: $isExtendedSemester, id: $id, name: $name, credit: $credit, pointFormula: $pointFormula, pointBT: $pointBT, pointBV: $pointBV, pointCC: $pointCC, pointCK: $pointCK, pointGK: $pointGK, pointQT: $pointQT, pointTH: $pointTH, pointTT: $pointTT, resultT4: $resultT4, resultT10: $resultT10, resultByCharacter: $resultByCharacter, isReStudy: $isReStudy)';
   }
 
   @override
@@ -184,6 +192,7 @@ class SubjectResult {
         other.pointGK == pointGK &&
         other.pointQT == pointQT &&
         other.pointTH == pointTH &&
+        other.pointTT == pointTT &&
         other.resultT4 == resultT4 &&
         other.resultT10 == resultT10 &&
         other.resultByCharacter == resultByCharacter &&
@@ -206,6 +215,7 @@ class SubjectResult {
         pointGK.hashCode ^
         pointQT.hashCode ^
         pointTH.hashCode ^
+        pointTT.hashCode ^
         resultT4.hashCode ^
         resultT10.hashCode ^
         resultByCharacter.hashCode ^

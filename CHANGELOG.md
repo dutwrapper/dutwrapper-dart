@@ -1,5 +1,8 @@
 # DUTWRAPPER CHANGE LOG - DART/FLUTTER
 
+## 0.4.3
+* Fixed issues cause point T10 and T4 displays incorrectly.
+
 ## 0.4.2
 * New function for Account:
   - Account training status

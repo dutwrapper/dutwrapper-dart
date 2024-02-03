@@ -693,9 +693,10 @@ class Account {
           pointGK: double.tryParse(gridCell[11].getTextOrEmpty()),
           pointQT: double.tryParse(gridCell[12].getTextOrEmpty()),
           pointTH: double.tryParse(gridCell[13].getTextOrEmpty()),
-          resultT10: double.tryParse(gridCell[14].getTextOrEmpty()),
-          resultT4: double.tryParse(gridCell[15].getTextOrEmpty()),
-          resultByCharacter: gridCell[16].getText(),
+          pointTT: double.tryParse(gridCell[14].getTextOrEmpty()),
+          resultT10: double.tryParse(gridCell[15].getTextOrEmpty()),
+          resultT4: double.tryParse(gridCell[16].getTextOrEmpty()),
+          resultByCharacter: gridCell[17].getText(),
           isReStudy: subjectResultList.firstWhereOrNull((element) =>
                   element.name.toLowerCase() ==
                   gridCell[4].getTextOrEmpty().toLowerCase()) !=
