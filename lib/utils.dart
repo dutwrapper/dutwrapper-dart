@@ -1,7 +1,9 @@
+import 'package:dutwrapper/utils/html_parser_extension.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
 import 'model/dut_school_year.dart';
+import 'model/global_variables_url.dart';
 
 class DutUtils {
   static int getCurrentTimeUnixMilliseconds() {
@@ -11,7 +13,7 @@ class DutUtils {
   static Future<DutSchoolYear?> getCurrentSchoolYear({int timeout = 60}) async {
     try {
       final response = await http
-          .get(Uri.parse("http://dut.udn.vn/Lichtuan"))
+          .get(Uri.parse(GlobalVariablesUrl.dutSchedulePage()))
           .timeout(Duration(seconds: timeout));
 
       // Main processing
@@ -23,63 +25,35 @@ class DutUtils {
       int? week;
 
       // School year item processing
-      var cbbSchoolYear = webDoc
+      var cbbYear = webDoc
           .getElementById("dnn_ctr442_View_cboNamhoc")
-          ?.getElementsByTagName("option");
-      if (cbbSchoolYear == null) {
+          .getSelectedOptionInComboBox();
+      if (cbbYear == null) {
         // TODO: Error while parsing here.
         throw Exception("");
-      }
-      cbbSchoolYear.sort((p1, p2) {
-        var v1 = int.parse(p1.attributes["value"] ?? "0");
-        var v2 = int.parse(p2.attributes["value"] ?? "0");
-
-        return (v1 < v2)
-            ? 1
-            : (v1 > v2)
-                ? -1
-                : 0;
-      });
-
-      for (var yearItem in cbbSchoolYear) {
-        if (yearItem.attributes.containsKey("selected")) {
-          schYear = yearItem.text;
-          schYearVal = int.parse(yearItem.attributes["value"] ?? "0");
-        }
+      } else {
+        schYear = cbbYear.getText();
+        schYearVal = int.parse(cbbYear.getValue() ?? "0");
       }
 
       // Week item processing
       var cbbWeek = webDoc
           .getElementById("dnn_ctr442_View_cboTuan")
-          ?.getElementsByTagName("option");
+          .getSelectedOptionInComboBox();
       if (cbbWeek == null) {
         // TODO: Error while parsing here.
         throw Exception("");
-      }
-      cbbWeek.sort((p1, p2) {
-        var v1 = int.parse(p1.attributes["value"] ?? "0");
-        var v2 = int.parse(p2.attributes["value"] ?? "0");
-
-        return (v1 < v2)
-            ? 1
-            : (v1 > v2)
-                ? -1
-                : 0;
-      });
-
-      for (var weekItem in cbbWeek) {
-        if (weekItem.attributes.containsKey("selected")) {
-          RegExp regex =
-              RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
-          if (regex.hasMatch(weekItem.text)) {
-            var match1 = regex.firstMatch(weekItem.text)!;
-            week = int.parse(match1.group(1)!);
-            break;
-          }
+      } else {
+        RegExp regex =
+            RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
+        if (regex.hasMatch(cbbWeek.text)) {
+          var match1 = regex.firstMatch(cbbWeek.text)!;
+          week = int.parse(match1.group(1)!);
         }
       }
 
-      if (schYear != null && schYearVal != null && week != null) {
+      // schYearVal != null
+      if (schYear != null && week != null) {
         result = DutSchoolYear(
           schoolYear: schYear,
           schoolYearVal: schYearVal,

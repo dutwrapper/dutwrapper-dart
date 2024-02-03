@@ -27,7 +27,7 @@ class News {
       var doc = parse(response.body).getElementById('pnBody');
       if (doc != null) {
         doc.getElementsByClassName('tbBox').forEach((element) {
-          NewsGlobal newsItem = NewsGlobal();
+          NewsGlobal newsItem = NewsGlobal.createDefault();
           var splitted = element
               .getElementsByClassName('tbBoxCaption')[0]
               .text
@@ -86,7 +86,11 @@ class News {
 
     var newsBaseList = await _getNews(page: page, newsType: NewsType.subject);
     for (var newsItem in newsBaseList) {
-      NewsSubject item = NewsSubject();
+      NewsSubject item = NewsSubject(
+        links: [],
+        affectedClasses: [],
+        affectedLessons: RangeInt(),
+      );
       // Add all items in news global.
       item.date = newsItem.date;
       item.title = newsItem.title;
@@ -143,7 +147,8 @@ class News {
               ),
             );
           } else {
-            NewsSubjectGroup subjectGroupItem = NewsSubjectGroup();
+            NewsSubjectGroup subjectGroupItem =
+                NewsSubjectGroup.createDefault();
             subjectGroupItem.subjectName = className;
             try {
               subjectGroupItem.codeList.add(

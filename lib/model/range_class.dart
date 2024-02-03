@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 abstract class Range<T> {
   final T start;
   final T end;
@@ -17,12 +19,33 @@ abstract class Range<T> {
 
 class RangeInt extends Range<int> {
   RangeInt({
-    required super.start,
-    required super.end,
+    super.start = 0,
+    super.end = 0,
   });
 
   @override
   bool isBetween(int input) {
     return start <= input && input <= end;
   }
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+
+    result.addAll({'start': start});
+    result.addAll({'end': end});
+
+    return result;
+  }
+
+  factory RangeInt.fromMap(Map<String, dynamic> map) {
+    return RangeInt(
+      start: map['start'],
+      end: map['end'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory RangeInt.fromJson(String source) =>
+      RangeInt.fromMap(json.decode(source));
 }

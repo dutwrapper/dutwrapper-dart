@@ -1,4 +1,22 @@
-# DUT WRAPPER CHANGE LOG - DART
+# DUTWRAPPER CHANGE LOG - DART/FLUTTER
+
+## 0.4.3
+* Fixed issues cause point T10 and T4 displays incorrectly.
+
+## 0.4.2
+* New function for Account:
+  - Account training status
+
+## 0.4.1
+* New function for Account:
+  - Account Information
+
+## 0.4.0
+* Re-organizing model class.
+* New function for Account:
+  - Subject fee
+* New function for DutUtils:
+  - `getCurrentSchoolYear`: Get current school year in DUT.
 
 ## 0.3.4
 * Fixed a issue in sv.udn.vn in subject news cause return empty list instead of throwing exceptions.
