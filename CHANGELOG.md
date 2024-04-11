@@ -1,5 +1,8 @@
 # DUTWRAPPER CHANGE LOG - DART/FLUTTER
 
+## 0.4.4
+* Fixed a issue cause can't login account to sv.dut.udn.vn.
+
 ## 0.4.3
 * Fixed issues cause point T10 and T4 displays incorrectly.
 

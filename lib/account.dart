@@ -103,7 +103,7 @@ class Account {
   }) async {
     // Header data
     Map<String, String> header = <String, String>{
-      'cookie': 'ASP.NET_SessionId=$sessionId;',
+      'Cookie': 'ASP.NET_SessionId=$sessionId;',
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     };
 
@@ -141,7 +141,7 @@ class Account {
 
     // Header data
     Map<String, String> header = <String, String>{
-      'cookie': 'ASP.NET_SessionId=$sessionId;',
+      'Cookie': 'ASP.NET_SessionId=$sessionId;',
     };
 
     try {
@@ -177,7 +177,7 @@ class Account {
     try {
       // Header data
       Map<String, String> header = <String, String>{
-        'cookie': 'ASP.NET_SessionId=$sessionId;',
+        'Cookie': 'ASP.NET_SessionId=$sessionId;',
       };
 
       final response = await http
@@ -392,7 +392,7 @@ class Account {
     try {
       // Header data
       Map<String, String> header = <String, String>{
-        'cookie': 'ASP.NET_SessionId=$sessionId;',
+        'Cookie': 'ASP.NET_SessionId=$sessionId;',
       };
 
       final response = await http
@@ -474,7 +474,7 @@ class Account {
     try {
       // Header data
       Map<String, String> header = <String, String>{
-        'cookie': 'ASP.NET_SessionId=$sessionId;',
+        'Cookie': 'ASP.NET_SessionId=$sessionId;',
       };
 
       final response = await http
@@ -574,7 +574,7 @@ class Account {
     try {
       // Header data
       Map<String, String> header = <String, String>{
-        'cookie': 'ASP.NET_SessionId=$sessionId;',
+        'Cookie': 'ASP.NET_SessionId=$sessionId;',
       };
 
       final response = await http
