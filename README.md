@@ -13,13 +13,12 @@ This library provides wrapper (for this repository - crawl data from a page) for
 ## License and credits
 
 - [MIT](LICENSE) (click to view licenses)
-- No third-party library used.
 
 ## FAQ
 
 ### Branch in this repository?
-- "main": Default branch and main release.
-- "draft": Alpha branch. This branch is used for update my working and may not be tested. Use it at your own risk.
+- `main`: Default branch and main release.
+- `draft`: Alpha branch. This branch is used for update my working and may not be tested. Use it at your own risk.
 
 ### Wiki, or manual for how-to-use?
 - In a plan, please be patient.
