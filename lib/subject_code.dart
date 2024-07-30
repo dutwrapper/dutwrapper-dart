@@ -83,20 +83,20 @@ class SubjectCode {
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
-    result.addAll({'subjectId': subjectId});
-    result.addAll({'schoolYearId': schoolYearId});
-    result.addAll({'studentYearId': studentYearId});
-    result.addAll({'classId': classId});
+    result.addAll({'subject_id': subjectId});
+    result.addAll({'school_year_id': schoolYearId});
+    result.addAll({'student_year_id': studentYearId});
+    result.addAll({'class_id': classId});
 
     return result;
   }
 
   factory SubjectCode.fromMap(Map<String, dynamic> map) {
     return SubjectCode.from(
-      subjectId: map['subjectId']?.toInt() ?? 0,
-      schoolYearId: map['schoolYearId']?.toInt() ?? 0,
-      studentYearId: map['studentYearId'] ?? '',
-      classId: map['classId'] ?? '',
+      subjectId: map['subject_id']?.toInt() ?? 0,
+      schoolYearId: map['school_year_id']?.toInt() ?? 0,
+      studentYearId: map['student_year_id'] ?? '',
+      classId: map['class_id'] ?? '',
     );
   }
 

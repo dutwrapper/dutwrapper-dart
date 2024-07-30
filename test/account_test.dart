@@ -1,116 +1,23 @@
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: avoid_print
+// This is already test file, we need to all log here
 
-import 'dart:developer';
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:dutwrapper/account.dart';
-import 'package:dutwrapper/model/enums.dart';
+import 'package:dutwrapper/account_session_object.dart';
+import 'package:dutwrapper/accounts.dart';
+import 'package:dutwrapper/enums.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  Future<void> fetchSubjectSchedule({
-    required String sessionId,
-    required int year,
-    required int semester,
-    int timeout = 60,
-  }) async {
-    await Account.getSubjectSchedule(
-            sessionId: sessionId, year: 19, semester: 2)
-        .then(
-      (value) => {
-        log('Subject Schedule'),
-        log('====================================='),
-        log('Status: ${value.requestCode.toString()}'),
-        log('Status Code: ${value.statusCode}'),
-        value.data?.forEach(
-          (element) {
-            log('=================');
-            log('Id: ${element.id.toString()}');
-            log('Name: ${element.name}');
-            log('Credit: ${element.credit}');
-            log('IsHighQuality: ${element.isHighQuality}');
-            log('Lecturer: ${element.lecturerName}');
-            log('Subject Study:');
-            for (var subjectStudyItem
-                in element.subjectStudy.subjectStudyList) {
-              log('-========= Item ==========-');
-              log('- Day of week: ${subjectStudyItem.dayOfWeek}');
-              log('- Lesson: ${subjectStudyItem.lesson.toString()}');
-              log('- Room: ${subjectStudyItem.room}');
-            }
-            log('Subject Exam:');
-            log('- Date: ${element.subjectExam.date}');
-            log('- Group: ${element.subjectExam.group}');
-            log('- IsGlobal: ${element.subjectExam.isGlobal}');
-            log('- Room: ${element.subjectExam.room}');
-            log('Point formula: ${element.pointFormula}');
-          },
-        ),
-      },
-    );
-    log('');
-  }
-
-  Future<void> fetchSubjectFee({
-    required String sessionId,
-    required int year,
-    required int semester,
-    int timeout = 60,
-  }) async {
-    await Account.getSubjectFee(sessionId: sessionId, year: 22, semester: 1)
-        .then(
-      (value) => {
-        log('Subject Fee'),
-        log('====================================='),
-        log('Status: ${value.requestCode.toString()}'),
-        log('Status Code: ${value.statusCode}'),
-        value.data?.forEach(
-          (element) {
-            log('=================');
-            log('Id: ${element.id.toString()}');
-            log('Name: ${element.name}');
-            log('Credit: ${element.credit}');
-            log('IsHighQuality: ${element.isHighQuality}');
-            log('Price: ${element.price}');
-            log('IsDebt: ${element.isDebt}');
-            log('IsReStudy: ${element.isReStudy}');
-            log('PaymentAt: ${element.confirmedPaymentAt}');
-          },
-        ),
-      },
-    );
-    log('');
-  }
-
-  Future<void> fetchAccountInformation({
-    required String sessionId,
-    int timeout = 60,
-  }) async {
-    log('Account Information');
-    log('=====================================');
-    await Account.getAccountInformation(sessionId: sessionId)
-        .then((value) => {log(value.data.toString())});
-    log('');
-  }
-
-  Future<void> fetchAccountTrainingStatus({
-    required String sessionId,
-    int timeout = 60,
-  }) async {
-    log('Account training status');
-    log('=====================================');
-    await Account.getAccountTrainingStatus(sessionId: sessionId)
-        .then((value) => {log(value.data.toString())});
-    log('');
-  }
-
-  test('Account functions', () async {
-    var SUBJECT_SCHEDULE_YEAR = 19; // YY
+  test('Accounts functions', () async {
+    var SUBJECT_SCHEDULE_YEAR = 20; // YY
     var SUBJECT_SCHEDULE_SEMESTER = 2; // 1,2,3
-    var FETCH_SUBJECT_SCHEDULE = true;
+    var FETCH_SUBJECT_INFORMATION = true;
     var FETCH_SUBJECT_FEE = true;
-    var FETCH_ACCOUNT_INFORMATION = true;
-    var FETCH_ACCOUNT_TRAINING_STATUS = true;
+    var FETCH_STUDENT_INFORMATION = true;
+    var FETCH_TRAINING_RESULT = true;
 
     var env1 = Platform.environment['dut_account'];
     if (env1 == null) {
@@ -122,111 +29,70 @@ void main() {
           'Invaild dut_account varaiable!\nMake sure you\'re formatted correctly following (username|password)!');
     }
 
-    String sessionId = '';
+    // Get session
+    print('\nGetting new session...');
+    AccountSession session = await Accounts.generateNewSession();
+    print(session.toJson());
 
-    // Get session id
-    await Account.generateSessionID().then((value) => {
-          log('GenerateSessionID'),
-          log('==================================='),
-          sessionId = value.sessionId,
-          log('Session ID: ${value.sessionId}'),
-          log('Status Code: ${value.statusCode}')
-        });
-    if (sessionId == '') {
-      throw Exception('No session id found!');
+    // Check if logged in before
+    print('\nChecking if this session has been logged in before...');
+    print(await Accounts.isLoggedIn(session: session));
+
+    // Login and check again
+    print('\nLogging in...');
+    Accounts.login(
+      session: session,
+      authInfo: AuthInfo(
+        username: env1.split('|')[0],
+        password: env1.split('|')[1],
+      ),
+    );
+    print('Done! Now checking if session has been logged in...');
+    var loggedIn1 = await Accounts.isLoggedIn(session: session);
+    print(loggedIn1);
+    if (loggedIn1 != LoginStatus.loggedIn) {
+      throw Exception('Sorry, your login information is incorrect. This test cannot continue...');
     }
-    log('');
 
-    // Check is logged in
-    await Account.isLoggedIn(sessionId: sessionId).then(
-      (value) => {
-        log('Check is logged in (before login)'),
-        log('====================================='),
-        log('IsLoggedIn (Not logged in code)'),
-        log('Status: ${value.requestCode.toString()}'),
-        log('Status Code: ${value.statusCode}'),
-        if (value.requestCode == RequestCode.successful)
-          {throw Exception('Look like you have logged in!')}
-      },
-    );
-    log('');
-
-    // Login
-    await Account.login(
-      userId: env1.split('|')[0],
-      password: env1.split('|')[1],
-      sessionId: sessionId,
-    );
-
-    // Check again
-    await Account.isLoggedIn(sessionId: sessionId).then(
-      (value) {
-        log('Check is logged in (after login)');
-        log('=====================================');
-        log('IsLoggedIn (Logged in code)');
-        log('Status: ${value.requestCode.toString()}');
-        log('Status Code: ${value.statusCode}');
-        if (value.requestCode != RequestCode.successful) {
-          throw Exception(
-              "Can't login your account to DUT system. Make sure your information is correct and try again.");
-        }
-      },
-    );
-    log('');
-
-    // Trigger subject schedule
-    if (FETCH_SUBJECT_SCHEDULE) {
-      await fetchSubjectSchedule(
-        sessionId: sessionId,
+    // Fetch subject information
+    print('\nFetching subject information...');
+    if (FETCH_SUBJECT_INFORMATION) {
+      print(jsonEncode(await Accounts.fetchSubjectInformation(
+        session: session,
         year: SUBJECT_SCHEDULE_YEAR,
         semester: SUBJECT_SCHEDULE_SEMESTER,
-      );
+      )));
     }
 
-    // Trigger subject fee
+    // Fetch subject fee
+    print('\nFetching subject fee...');
     if (FETCH_SUBJECT_FEE) {
-      await fetchSubjectFee(
-        sessionId: sessionId,
+      print(jsonEncode(await Accounts.fetchSubjectFee(
+        session: session,
         year: SUBJECT_SCHEDULE_YEAR,
         semester: SUBJECT_SCHEDULE_SEMESTER,
-      );
+      )));
     }
 
-    // Trigger account information
-    if (FETCH_ACCOUNT_INFORMATION) {
-      await fetchAccountInformation(sessionId: sessionId);
+    // Fetch student information
+    print('\nFetching student information...');
+    if (FETCH_STUDENT_INFORMATION) {
+      print(
+          (await Accounts.fetchStudentInformation(session: session)).toJson());
     }
 
-    // Trigger account training status
-    if (FETCH_ACCOUNT_TRAINING_STATUS) {
-      await fetchAccountTrainingStatus(sessionId: sessionId);
+    // Fetch training result
+    print('\nFetching training result...');
+    if (FETCH_TRAINING_RESULT) {
+      print((await Accounts.fetchTrainingResult(session: session)).toJson());
     }
 
-    // Logout
-    await Account.logout(sessionId: sessionId).then(
-      (value) => {
-        log('Logout'),
-        log('====================================='),
-        log('Status: ${value.requestCode.toString()}'),
-        log('Status Code: ${value.statusCode}')
-      },
-    );
-    log('');
+    // Logout and ensure logged out
+    print('\nLogging out...');
+    await Accounts.logout(session: session);
+    print('Done! Now checking if session has been logged out...');
+    print(await Accounts.isLoggedIn(session: session));
 
-    // Check again
-    await Account.isLoggedIn(sessionId: sessionId).then(
-      (value) => {
-        log('Checked logged out (if successful, will return failed in this request)'),
-        log('====================================='),
-        log('Status: ${value.requestCode.toString()}'),
-        log('Status Code: ${value.statusCode}'),
-        if (value.requestCode == RequestCode.successful)
-          {
-            throw Exception(
-                'Look like you have logged in! Did you have successfully logout before?')
-          }
-      },
-    );
-    log('');
+    print('\nThis test has been finished!\n');
   });
 }

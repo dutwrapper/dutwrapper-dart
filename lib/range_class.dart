@@ -28,6 +28,13 @@ class RangeInt extends Range<int> {
     return start <= input && input <= end;
   }
 
+  factory RangeInt.fromMap(Map<String, dynamic> map) {
+    return RangeInt(
+      start: map['start'],
+      end: map['end'],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
@@ -35,13 +42,6 @@ class RangeInt extends Range<int> {
     result.addAll({'end': end});
 
     return result;
-  }
-
-  factory RangeInt.fromMap(Map<String, dynamic> map) {
-    return RangeInt(
-      start: map['start'],
-      end: map['end'],
-    );
   }
 
   String toJson() => json.encode(toMap());

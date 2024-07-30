@@ -1,5 +1,5 @@
-import 'package:html/dom.dart';
 import 'package:collection/collection.dart';
+import 'package:html/dom.dart';
 
 extension ElementParser on Element? {
   String? getValue() {
@@ -14,8 +14,8 @@ extension ElementParser on Element? {
     return (this == null)
         ? null
         : (this!.text.isEmpty)
-            ? null
-            : this!.text;
+        ? null
+        : this!.text;
   }
 
   String getTextOrEmpty() {
@@ -37,7 +37,7 @@ extension ElementParser on Element? {
     }
 
     return optionList.firstWhereOrNull(
-        (element) => element.attributes.containsKey('selected'));
+            (element) => element.attributes.containsKey('selected'));
   }
 
   bool isGridChecked() {
