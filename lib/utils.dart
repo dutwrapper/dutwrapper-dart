@@ -1,11 +1,11 @@
-import 'package:dutwrapper/utils/html_parser_extension.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
-import 'model/dut_school_year.dart';
-import 'model/global_variables_url.dart';
+import 'http_element_parser.dart';
+import 'global_url.dart';
+import 'utils_object.dart';
 
-class DutUtils {
+class Utils {
   static int getCurrentTimeUnixMilliseconds() {
     return DateTime.now().millisecondsSinceEpoch;
   }
@@ -13,7 +13,7 @@ class DutUtils {
   static Future<DutSchoolYear?> getCurrentSchoolYear({int timeout = 60}) async {
     try {
       final response = await http
-          .get(Uri.parse(GlobalVariablesUrl.dutSchedulePage()))
+          .get(Uri.parse(GlobalUrl.dutSchedulePage()))
           .timeout(Duration(seconds: timeout));
 
       // Main processing

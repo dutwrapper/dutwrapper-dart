@@ -1,13 +1,13 @@
 import 'enums.dart';
 
-class GlobalVariablesUrl {
+class GlobalUrl {
   static String newsLink({
     NewsType newsType = NewsType.global,
     int page = 1,
-    NewsSearchType searchType = NewsSearchType.byTitle,
+    NewsSearchMethod searchType = NewsSearchMethod.byTitle,
     String? query,
   }) {
-    return "${baseLink()}/WebAjax/evLopHP_Load.aspx?E=${(newsType == NewsType.global) ? 'CTRTBSV' : 'CTRTBGV'}&PAGETB=$page&COL=${searchType == NewsSearchType.byTitle ? "TieuDe" : "NoiDung"}&NAME=${query ?? ""}&TAB=0";
+    return "${baseLink()}/WebAjax/evLopHP_Load.aspx?E=${(newsType == NewsType.global) ? 'CTRTBSV' : 'CTRTBGV'}&PAGETB=$page&COL=${searchType == NewsSearchMethod.byTitle ? "TieuDe" : "NoiDung"}&NAME=${query ?? ""}&TAB=0";
   }
 
   static String subjectScheduleLink({

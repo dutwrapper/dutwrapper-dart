@@ -1,30 +1,31 @@
-import 'dart:developer';
+// ignore_for_file: avoid_print
+// This is already test file, we need to all log here
 
-import 'package:dutwrapper/model/custom_clock.dart';
+import 'package:dutwrapper/custom_clock.dart';
 import 'package:dutwrapper/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('Get current school year', () async {
-    log('Get current school year');
-    log('=====================================');
-    var value = await DutUtils.getCurrentSchoolYear();
+    print('Get current school year');
+    print('=====================================');
+    var value = await Utils.getCurrentSchoolYear();
     if (value != null) {
-      log('School year: ${value.schoolYear}');
-      log('School year value: ${value.schoolYearVal}');
-      log('Week: ${value.week}');
+      print('School year: ${value.schoolYear}');
+      print('School year value: ${value.schoolYearVal}');
+      print('Week: ${value.week}');
     } else {
-      log('Fetch failed!');
+      print('Fetch failed!');
     }
-    log('');
+    print('');
   });
 
   test('Get current dut lesson', () {
-    log('Get current dut lesson');
-    log('=====================================');
+    print('Get current dut lesson');
+    print('=====================================');
     var value2 = CustomClock.current();
-    log('Current time: ${value2.toString()}');
-    log('Current lesson: ${value2.toDUTLesson()}');
-    log('');
+    print('Current time: ${value2.toString()}');
+    print('Current lesson: ${value2.toDUTLesson()}');
+    print('');
   });
 }
