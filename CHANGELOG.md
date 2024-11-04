@@ -2,6 +2,9 @@
 
 This file will list all version log for modified, added or removed functions of dutwrapper (Dart language).
 
+## 1.0.1
+- Add option for search query in `News` class.
+
 ## 1.0.0
 - Functions in `Account` class have no more `RequestResult` returns. This class has been removed.
   - Introducing `AccountSession` class. This will resolve login failed in the future (if not too much).

@@ -1,4 +1,3 @@
-
 // ignore_for_file: avoid_print
 // This is already test file, we need to all log here
 
@@ -48,7 +47,8 @@ void main() {
             print('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
           }
           for (var affectedClassItem in element.affectedClasses) {
-            print("Class affected: ${affectedClassItem.subjectName} - ${affectedClassItem.codeList.map((p) => "${p.studentYearId}-${p.classId}").toList().join(", ")}");
+            print(
+                "Class affected: ${affectedClassItem.subjectName} - ${affectedClassItem.codeList.map((p) => "${p.studentYearId}-${p.classId}").toList().join(", ")}");
           }
           print('Lecturer Gender: ${element.lecturerGender.toString()}');
           print('Lecturer Name: ${element.lecturerName}');

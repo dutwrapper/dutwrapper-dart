@@ -1,5 +1,3 @@
-library dutwrapper;
-
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,11 +11,17 @@ class News {
   static Future<List<NewsGlobal>> _getNews({
     int page = 1,
     required NewsType newsType,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
   }) async {
     final List<NewsGlobal> result = [];
 
-    String newsUrl =
-        GlobalUrl.newsLink(newsType: newsType, page: page);
+    String newsUrl = GlobalUrl.newsLink(
+      newsType: newsType,
+      page: page,
+      searchType: newsSearchMethod,
+      query: newsSearchQuery,
+    );
 
     final response = await http.Client().get(Uri.parse(newsUrl));
     if (response.statusCode == 200) {
@@ -27,17 +31,13 @@ class News {
           // Add to list.
           result.add(NewsGlobal(
             // Date & title
-            title: _getNewsTitle(
-                element.getElementsByClassName('tbBoxCaption')[0].text),
-            date: _getNewsDate(
-                element.getElementsByClassName('tbBoxCaption')[0].text),
+            title: _getNewsTitle(element.getElementsByClassName('tbBoxCaption')[0].text),
+            date: _getNewsDate(element.getElementsByClassName('tbBoxCaption')[0].text),
             // Html and content string
             content: element.getElementsByClassName('tbBoxContent')[0].text,
-            contentHtml:
-                element.getElementsByClassName('tbBoxContent')[0].innerHtml,
+            contentHtml: element.getElementsByClassName('tbBoxContent')[0].innerHtml,
             // Detect resources
-            resources: _getNewsContentResources(
-                element.getElementsByClassName('tbBoxContent')[0].innerHtml),
+            resources: _getNewsContentResources(element.getElementsByClassName('tbBoxContent')[0].innerHtml),
           ));
         });
       }
@@ -46,14 +46,32 @@ class News {
     return result;
   }
 
-  static Future<List<NewsGlobal>> getNewsGlobal({int page = 1}) async {
-    return await _getNews(page: page, newsType: NewsType.global);
+  static Future<List<NewsGlobal>> getNewsGlobal({
+    int page = 1,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
+  }) async {
+    return await _getNews(
+      page: page,
+      newsType: NewsType.global,
+      newsSearchMethod: newsSearchMethod,
+      newsSearchQuery: newsSearchQuery,
+    );
   }
 
-  static Future<List<NewsSubject>> getNewsSubject({int page = 1}) async {
+  static Future<List<NewsSubject>> getNewsSubject({
+    int page = 1,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
+  }) async {
     List<NewsSubject> result = [];
 
-    var newsBaseList = await _getNews(page: page, newsType: NewsType.subject);
+    var newsBaseList = await _getNews(
+      page: page,
+      newsType: NewsType.subject,
+      newsSearchMethod: newsSearchMethod,
+      newsSearchQuery: newsSearchQuery,
+    );
     for (var newsItem in newsBaseList) {
       // Add all items from news global.
       NewsSubject item = NewsSubject(
@@ -98,16 +116,13 @@ class News {
     if (split.length != 2) {
       return 0;
     }
-    final dateTime =
-        DateTime.parse(split[0].split('/').reversed.toList().join('-'));
+    final dateTime = DateTime.parse(split[0].split('/').reversed.toList().join('-'));
     return dateTime.millisecondsSinceEpoch;
   }
 
-  static List<NewsResource> _getNewsContentResources(
-      String tbContentInnerHtml) {
+  static List<NewsResource> _getNewsContentResources(String tbContentInnerHtml) {
     List<NewsResource> resources = [];
-    tbContentInnerHtml =
-        "<!--suppress HtmlRequiredLangAttribute --><html><body>$tbContentInnerHtml</body></html>";
+    tbContentInnerHtml = "<!--suppress HtmlRequiredLangAttribute --><html><body>$tbContentInnerHtml</body></html>";
     var docHtml = parse(tbContentInnerHtml);
     var contentTemp = docHtml.body?.text ?? "";
     int position = 1;
@@ -115,11 +130,8 @@ class News {
     docHtml.getElementsByTagName('a').forEach((element) {
       if (contentTemp.contains(element.text)) {
         position += contentTemp.indexOf(element.text);
-        NewsResource newsLink = NewsResource(
-            text: element.text,
-            position: position,
-            type: 'link',
-            content: element.attributes['href']!);
+        NewsResource newsLink =
+            NewsResource(text: element.text, position: position, type: 'link', content: element.attributes['href']!);
         resources.add(newsLink);
 
         position += element.text.length;
@@ -127,8 +139,7 @@ class News {
         // https://stackoverflow.com/questions/24220509/exception-when-replacing-brackets
         // var temp = contentTemp.split(element.text);
         // if (temp.length > 1) contentTemp = temp[1];
-        contentTemp = contentTemp
-            .substring(contentTemp.indexOf(element.text) + element.text.length);
+        contentTemp = contentTemp.substring(contentTemp.indexOf(element.text) + element.text.length);
       }
     });
 
@@ -136,12 +147,8 @@ class News {
   }
 
   static LecturerGender _getNewsLecturerGender(String newsTitle) {
-    String lecturerProcessing =
-        newsTitle.split(' thông báo đến lớp: ')[0].trim();
-    switch (lecturerProcessing
-        .substring(0, lecturerProcessing.indexOf(' '))
-        .trim()
-        .toLowerCase()) {
+    String lecturerProcessing = newsTitle.split(' thông báo đến lớp: ')[0].trim();
+    switch (lecturerProcessing.substring(0, lecturerProcessing.indexOf(' ')).trim().toLowerCase()) {
       case 'thầy':
         {
           return LecturerGender.male;
@@ -177,14 +184,13 @@ class News {
 
     // Subject processing
     tbTitle.split(' thông báo đến lớp: ')[1].split(' , ').forEach(
-          (element) {
+      (element) {
         final start = element.lastIndexOf('[') + 1;
         final end = element.lastIndexOf(']');
         final classId = element.substring(start, end);
         final className = element.substring(0, start - 1).trimRight();
 
-        final affectedClassIndex = result
-            .indexWhere((element) => element.subjectName == className);
+        final affectedClassIndex = result.indexWhere((element) => element.subjectName == className);
         if (affectedClassIndex > -1) {
           var affectedClass = result[affectedClassIndex];
           affectedClass.codeList.add(
@@ -245,13 +251,8 @@ class News {
       var splitted = tbContent
           .substring(firstMatch.start, firstMatch.end)
           .toLowerCase()
-          .replaceFirst(
-          (ls == LessonStatus.makeUp)
-              ? 'tiết: '
-              : '(tiết:',
-          '')
-          .replaceFirst(
-          (ls == LessonStatus.makeUp) ? ',' : ')', '')
+          .replaceFirst((ls == LessonStatus.makeUp) ? 'tiết: ' : '(tiết:', '')
+          .replaceFirst((ls == LessonStatus.makeUp) ? ',' : ')', '')
           .trim()
           .split('-');
       return RangeInt(
@@ -276,12 +277,8 @@ class News {
     RegExp regExp = RegExp('\\d{2}[-|/]\\d{2}[-|/]\\d{4}');
     var firstMatch = regExp.firstMatch(tbContent);
     if (firstMatch != null) {
-      final dateTime = DateTime.parse(tbContent
-          .substring(firstMatch.start, firstMatch.end)
-          .split('/')
-          .reversed
-          .toList()
-          .join('-'));
+      final dateTime =
+          DateTime.parse(tbContent.substring(firstMatch.start, firstMatch.end).split('/').reversed.toList().join('-'));
       return dateTime.millisecondsSinceEpoch;
     }
 

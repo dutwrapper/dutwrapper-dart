@@ -756,11 +756,11 @@ class GraduateStatus {
       hasSigEnglish: hasSigEnglish ?? this.hasSigEnglish,
       hasSigIT: hasSigIT ?? this.hasSigIT,
       hasQualifiedGraduate: hasQualifiedGraduate ?? this.hasQualifiedGraduate,
-      rewardsInfo: info1 ?? this.rewardsInfo,
-      disciplineInfo: info2 ?? this.disciplineInfo,
-      eligibleGraduationThesisStatus: info3 ?? this.eligibleGraduationThesisStatus,
+      rewardsInfo: info1 ?? rewardsInfo,
+      disciplineInfo: info2 ?? disciplineInfo,
+      eligibleGraduationThesisStatus: info3 ?? eligibleGraduationThesisStatus,
       eligibleGraduationStatus:
-      approveGraduateProcessInfo ?? this.eligibleGraduationStatus,
+      approveGraduateProcessInfo ?? eligibleGraduationStatus,
     );
   }
 

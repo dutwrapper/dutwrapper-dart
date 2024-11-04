@@ -1,5 +1,3 @@
-library dutwrapper;
-
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
@@ -273,7 +271,7 @@ class Accounts {
 
             if (schCell[5].text.isNotEmpty) {
               RegExp regex = RegExp(
-                  r"Ngày: ([0-9]{2}\/[0-9]{2}\/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)");
+                  r"Ngày: ([0-9]{2}/[0-9]{2}/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)");
               if (regex.hasMatch(schCell[5].text)) {
                 var dateSplit =
                     regex.firstMatch(schCell[5].text)!.group(1)!.split("/");
