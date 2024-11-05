@@ -2,24 +2,19 @@
 
 An unofficial wrapper at [sv.dut.udn.vn - Da Nang University of Science and Technology student page](http://sv.dut.udn.vn).
 
-# Version
+## Version
+- Release version [![https://github.com/dutwrapper/dutwrapper-dart](https://img.shields.io/github/v/release/dutwrapper/dutwrapper-dart)](https://github.com/dutwrapper/dutwrapper-dart/releases)
+- Pre-release version [![https://github.com/dutwrapper/dutwrapper-dart/tree/draft](https://img.shields.io/github/v/tag/dutwrapper/dutwrapper-dart?label=pre-release%20tag)](https://github.com/dutwrapper/dutwrapper-dart/tree/draft)
+- [Summary change log](CHANGELOG.md) / [Entire source code changes](https://github.com/dutwrapper/dutwrapper-dart/commits)
+- Badge provided by [shields.io](https://shields.io/)
 
-[![](https://img.shields.io/github/v/release/dutwrapper/dutwrapper-dart?label=release)](https://github.com/dutwrapper/dutwrapper-dart/releases)
-
-[![](https://img.shields.io/github/v/tag/dutwrapper/dutwrapper-dart?label=pre-release)](https://github.com/dutwrapper/dutwrapper-dart/releases)
-
-# Building requirements
+## Building requirements
+- You will need [Flutter 3.0 or later](https://flutter.dev/).
 - Follow [this document](https://docs.flutter.dev/) for building or using this library.
 
-# FAQ
+## FAQ
 
-## Where can I found library changelog?
-If you want to:
-- View major changes: [Click here](CHANGELOG.md).
-- View entire source code changes: [Click here](https://github.com/dutwrapper/dutwrapper-dart/commits).
-  - You will need to change branch if you want to view changelog for specificd branch.
-
-## Branch in dutwrapper?
+### Branch in dutwrapper?
 - `main`/`stable`: Default branch and main release.
 - `draft`: This branch will used for update my progress and it is unstable. Use it at your own risk.
 
@@ -27,12 +22,16 @@ If you want to:
 - Make sure you have `dut_account` variable set with syntax `studentid|password`. This will ensure secure when testing project.
 
 ### Where can I find Wiki for this library?
+- Unfortunately, I haven't done wiki yet.
+- Instead you can navigate source code to review them.
+
+### Where can I find Wiki for this library?
 - Not now. Be patient.
 
-## I'm got issue with this library. Which place can I reproduce issue for you?
-- If you found a issue, you can report this via [issue tab](https://github.com/dutwrapper/dutwrapper-dart/issues) on this repository.
+### I'm got issue or a feature request about this library. How should I do?
+- Navigate to [issue tab](https://github.com/dutwrapper/dutwrapper-dart/issues) on this repository to create a issue or feature request.
 
-# Credit and license?
+## Credit and license?
 - License: [**MIT**](LICENSE)
 - DISCLAIMER:
   - This project - dutwrapper - is not affiliated with [Da Nang University of Science and Technology school](http://dut.udn.vn).
