@@ -4,10 +4,14 @@
 import 'dart:convert';
 
 import 'package:dutwrapper/news.dart';
+import 'package:dutwrapper/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('News Global', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
     for (int i = 1; i <= 5; i++) {
       print('======= GET GLOBAL NEWS - PAGE $i ========');
       final response = await News.getNewsGlobal(page: i);
@@ -32,6 +36,9 @@ void main() {
   });
 
   test('News Subject', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
     for (int i = 1; i <= 5; i++) {
       print('======= GET SUBJECT NEWS - PAGE $i =======');
       final response = await News.getNewsSubject(page: i);

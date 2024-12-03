@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:dutwrapper/account_session_object.dart';
 import 'package:dutwrapper/accounts.dart';
 import 'package:dutwrapper/enums.dart';
+import 'package:dutwrapper/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -28,6 +29,10 @@ void main() {
       throw Exception(
           'Invaild dut_account varaiable!\nMake sure you\'re formatted correctly following (username|password)!');
     }
+
+    // Checking server is available before starting test.
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
 
     // Get session
     print('\nGetting new session...');

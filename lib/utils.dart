@@ -1,6 +1,7 @@
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
+import 'http_client_wrapper.dart';
 import 'http_element_parser.dart';
 import 'global_url.dart';
 import 'utils_object.dart';
@@ -10,11 +11,13 @@ class Utils {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
+  static Future<HttpClientResponse> checkPageStatus({int timeout = 60}) async {
+    return HttpClientWrapper.get(uri: Uri.parse(GlobalUrl.baseLink()));
+  }
+
   static Future<DutSchoolYear?> getCurrentSchoolYear({int timeout = 60}) async {
     try {
-      final response = await http
-          .get(Uri.parse(GlobalUrl.dutSchedulePage()))
-          .timeout(Duration(seconds: timeout));
+      final response = await http.get(Uri.parse(GlobalUrl.dutSchedulePage())).timeout(Duration(seconds: timeout));
 
       // Main processing
       var webDoc = parse(response.body);
@@ -25,9 +28,7 @@ class Utils {
       int? week;
 
       // School year item processing
-      var cbbYear = webDoc
-          .getElementById("dnn_ctr442_View_cboNamhoc")
-          .getSelectedOptionInComboBox();
+      var cbbYear = webDoc.getElementById("dnn_ctr442_View_cboNamhoc").getSelectedOptionInComboBox();
       if (cbbYear == null) {
         // TODO: Error while parsing here.
         throw Exception("");
@@ -37,15 +38,12 @@ class Utils {
       }
 
       // Week item processing
-      var cbbWeek = webDoc
-          .getElementById("dnn_ctr442_View_cboTuan")
-          .getSelectedOptionInComboBox();
+      var cbbWeek = webDoc.getElementById("dnn_ctr442_View_cboTuan").getSelectedOptionInComboBox();
       if (cbbWeek == null) {
         // TODO: Error while parsing here.
         throw Exception("");
       } else {
-        RegExp regex =
-            RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
+        RegExp regex = RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
         if (regex.hasMatch(cbbWeek.text)) {
           var match1 = regex.firstMatch(cbbWeek.text)!;
           week = int.parse(match1.group(1)!);
@@ -73,15 +71,7 @@ class Utils {
     int dayOfweek = 1,
     bool fullString = false,
   }) {
-    var dataFull = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ];
+    var dataFull = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var dataShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     if (dayOfweek > 7 || dayOfweek < 1) {
