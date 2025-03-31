@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'lib_exception.dart';
+
 class AccountSession {
   String? sessionId;
   String? viewState;
@@ -38,19 +40,29 @@ class AccountSession {
 
   void ensureValidSessionId() {
     if (sessionId == null) {
-      throw Exception("Session ID is null.");
+      throw DutWrapperException(
+        message: "Session ID is null.",
+        reason: DutWrapperExceptionReason.notAuthorized,
+      );
     }
   }
 
   void ensureValidLoginForm() {
     ensureValidSessionId();
     if (viewState == null) {
-      throw Exception("viewState is null. This is required when login.");
+      throw DutWrapperException(
+        message: "viewState is null. This is required when login.\n"
+            "You might generate session again to do this.",
+        reason: DutWrapperExceptionReason.parameterException,
+      );
     }
     if (viewStateGenerator == null) {
-      throw Exception("viewStateGenerator is null. This is required when login.");
+      throw DutWrapperException(
+        message: "viewStateGenerator is null. This is required when login.\n"
+            "You might generate session again to do this.",
+        reason: DutWrapperExceptionReason.parameterException,
+      );
     }
-
   }
 }
 
@@ -69,10 +81,16 @@ class AuthInfo {
 
   void ensureValidAuthInfo() {
     if (username == null || password == null) {
-      throw Exception("Username or password is null.");
+      throw DutWrapperException(
+        message: "Username or password is null.",
+        reason: DutWrapperExceptionReason.parameterException,
+      );
     }
     if (username!.length < 6 || password!.length < 6) {
-      throw Exception("Username or password is less than 6 characters.");
+      throw DutWrapperException(
+        message: "Username or password must be greater than 6 characters.",
+        reason: DutWrapperExceptionReason.parameterException,
+      );
     }
   }
 }

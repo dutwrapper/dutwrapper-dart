@@ -3,29 +3,36 @@
 
 import 'package:dutwrapper/custom_clock.dart';
 import 'package:dutwrapper/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('Get current school year', () async {
-    print('Get current school year');
-    print('=====================================');
+    debugPrint('Get current school year');
+    debugPrint('=====================================');
     var value = await Utils.getCurrentSchoolYear();
     if (value != null) {
-      print('School year: ${value.schoolYear}');
-      print('School year value: ${value.schoolYearVal}');
-      print('Week: ${value.week}');
+      debugPrint('School year: ${value.schoolYear}');
+      debugPrint('School year value: ${value.schoolYearVal}');
+      debugPrint('Week: ${value.week}');
     } else {
-      print('Fetch failed!');
+      debugPrint('Fetch failed!');
     }
-    print('');
+    debugPrint('');
   });
 
   test('Get current dut lesson', () {
-    print('Get current dut lesson');
-    print('=====================================');
+    debugPrint('Get current dut lesson');
+    debugPrint('=====================================');
     var value2 = CustomClock.current();
-    print('Current time: ${value2.toString()}');
-    print('Current lesson: ${value2.toDUTLesson()}');
-    print('');
+    debugPrint('Current time: ${value2.toString()}');
+    debugPrint('Current lesson: ${value2.toDUTLesson()}');
+    debugPrint('');
+  });
+
+  test('Check if have internet', () async {
+    debugPrint('Checking...');
+    Utils.ensureServerWorking();
+    debugPrint('If you reached here, you have connected to sv.dut.udn.vn.');
   });
 }

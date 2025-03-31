@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'lib_exception.dart';
 import 'package:http/http.dart' as http;
 
 class HttpClientResponse {
@@ -34,20 +35,29 @@ class HttpClientResponse {
     }
     // If have exception -> Request is not successful. Just throw them.
     else if (ex != null) {
-      throw Exception("We can't connect with this server. "
-          "Make sure you have entered address correctly, "
-          "or check your internet connection."
-          "\n\nException: $ex}");
+      throw DutWrapperException(
+        message: "Something went wrong when connecting with this server. "
+            "Make sure you have entered address correctly, "
+            "or check your internet connection."
+            "\n\nException: $ex",
+        reason: DutWrapperExceptionReason.serverNotFound,
+      );
     }
     // If no statusCode (null) -> Request is not successful. Just throw them.
     else if (statusCode == null) {
-      throw Exception("We can't connect with this server. "
-          "Make sure you have entered address correctly, "
-          "or check your internet connection.");
+      throw DutWrapperException(
+        message: "We can't connect with this server. "
+            "Make sure you have entered address correctly, "
+            "or check your internet connection.",
+        reason: DutWrapperExceptionReason.internetNotFound,
+      );
     }
     // Throw otherwise
     else {
-      throw Exception("$host has returned with code $statusCode");
+      throw DutWrapperException(
+        message: "$host has returned with code $statusCode.",
+        reason: DutWrapperExceptionReason.unknown,
+      );
     }
   }
 }
@@ -59,7 +69,9 @@ class HttpClientWrapper {
     int timeout = 60,
   }) async {
     try {
-      final response = await http.get(uri, headers: headers).timeout(Duration(seconds: timeout));
+      final response = await http
+          .get(uri, headers: headers)
+          .timeout(Duration(seconds: timeout));
 
       return HttpClientResponse(
         host: '${uri.scheme}://${uri.host}',

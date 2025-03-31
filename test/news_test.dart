@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:dutwrapper/news.dart';
 import 'package:dutwrapper/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -13,24 +14,25 @@ void main() {
     checkResponse.ensureSuccessfulStatusCode();
 
     for (int i = 1; i <= 5; i++) {
-      print('======= GET GLOBAL NEWS - PAGE $i ========');
+      debugPrint('======= GET GLOBAL NEWS - PAGE $i ========');
       final response = await News.getNewsGlobal(page: i);
 
       if (response.isNotEmpty) {
-        print('Subject list: ${response.length}');
+        debugPrint('Subject list: ${response.length}');
         for (var element in response) {
-          print('========================================');
-          print('Date: ${element.date}');
-          print('Title: ${element.title}');
-          print('Content: ${element.content}');
+          debugPrint('========================================');
+          debugPrint('Date: ${element.date}');
+          debugPrint('Title: ${element.title}');
+          debugPrint('Content: ${element.content}');
           for (var link in element.resources) {
-            print('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+            debugPrint(
+                'Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
           }
         }
 
-        print(jsonEncode(response));
+        debugPrint(jsonEncode(response));
       } else {
-        print('Nothing in list!');
+        debugPrint('Nothing in list!');
       }
     }
   });
@@ -40,33 +42,34 @@ void main() {
     checkResponse.ensureSuccessfulStatusCode();
 
     for (int i = 1; i <= 5; i++) {
-      print('======= GET SUBJECT NEWS - PAGE $i =======');
+      debugPrint('======= GET SUBJECT NEWS - PAGE $i =======');
       final response = await News.getNewsSubject(page: i);
 
       if (response.isNotEmpty) {
-        print('Subject list: ${response.length}');
+        debugPrint('Subject list: ${response.length}');
         for (var element in response) {
-          print('========================================');
-          print('Date: ${element.date}');
-          print('Title: ${element.title}');
-          print('Content: ${element.content}');
+          debugPrint('========================================');
+          debugPrint('Date: ${element.date}');
+          debugPrint('Title: ${element.title}');
+          debugPrint('Content: ${element.content}');
           for (var link in element.resources) {
-            print('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+            debugPrint(
+                'Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
           }
           for (var affectedClassItem in element.affectedClasses) {
-            print(
+            debugPrint(
                 "Class affected: ${affectedClassItem.subjectName} - ${affectedClassItem.codeList.map((p) => "${p.studentYearId}-${p.classId}").toList().join(", ")}");
           }
-          print('Lecturer Gender: ${element.lecturerGender.toString()}');
-          print('Lecturer Name: ${element.lecturerName}');
-          print('Lesson Status: ${element.lessonStatus.toString()}');
-          print('Affected Date: ${element.affectedDate}');
-          print('Affected Lesson: ${element.affectedLessons.toString()}');
-          print('Affected Room: ${element.affectedRoom}');
+          debugPrint('Lecturer Gender: ${element.lecturerGender.toString()}');
+          debugPrint('Lecturer Name: ${element.lecturerName}');
+          debugPrint('Lesson Status: ${element.lessonStatus.toString()}');
+          debugPrint('Affected Date: ${element.affectedDate}');
+          debugPrint('Affected Lesson: ${element.affectedLessons.toString()}');
+          debugPrint('Affected Room: ${element.affectedRoom}');
         }
-        print(jsonEncode(response));
+        debugPrint(jsonEncode(response));
       } else {
-        print('Nothing in list!');
+        debugPrint('Nothing in list!');
       }
     }
   });

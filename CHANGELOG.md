@@ -2,6 +2,10 @@
 
 This file will list all version log for modified, added or removed functions of dutwrapper (Dart language).
 
+## 1.0.2
+- New DUT Wrapper exception.
+- `ensureServerWorking()` will check if you have connected to internet and sv.dut.udn.vn is online.
+
 ## 1.0.1
 - Add option for search query in `News` class.
 
