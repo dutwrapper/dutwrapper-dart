@@ -1,6 +1,3 @@
-// ignore_for_file: avoid_print
-// This is already test file, we need to all log here
-
 import 'dart:convert';
 
 import 'package:dutwrapper/news.dart';

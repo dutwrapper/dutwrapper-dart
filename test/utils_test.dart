@@ -1,6 +1,3 @@
-// ignore_for_file: avoid_print
-// This is already test file, we need to all log here
-
 import 'package:dutwrapper/custom_clock.dart';
 import 'package:dutwrapper/utils.dart';
 import 'package:flutter/foundation.dart';

@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'lib_exception.dart';
 import 'package:http/http.dart' as http;
+
+import 'lib_exception.dart';
 
 class HttpClientResponse {
   final String host;

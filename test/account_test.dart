@@ -1,7 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-// ignore_for_file: avoid_print
-// This is already test file, we need to all log here
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -66,8 +62,7 @@ void main() {
     debugPrint(loggedIn1.toString());
     if (loggedIn1 != LoginStatus.loggedIn) {
       throw DutWrapperException(
-        message:
-            'Sorry, your login information is incorrect. This test cannot continue...',
+        message: 'Sorry, your login information is incorrect. This test cannot continue...',
         reason: DutWrapperExceptionReason.notAuthorized,
       );
     }
@@ -95,15 +90,13 @@ void main() {
     // Fetch student information
     debugPrint('\nFetching student information...');
     if (FETCH_STUDENT_INFORMATION) {
-      debugPrint(
-          (await Accounts.fetchStudentInformation(session: session)).toJson());
+      debugPrint((await Accounts.fetchStudentInformation(session: session)).toJson());
     }
 
     // Fetch training result
     debugPrint('\nFetching training result...');
     if (FETCH_TRAINING_RESULT) {
-      debugPrint(
-          (await Accounts.fetchTrainingResult(session: session)).toJson());
+      debugPrint((await Accounts.fetchTrainingResult(session: session)).toJson());
     }
 
     // Logout and ensure logged out

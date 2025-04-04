@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 
+import 'global_url.dart';
 import 'http_client_wrapper.dart';
 import 'http_element_parser.dart';
-import 'global_url.dart';
 import 'lib_exception.dart';
 import 'utils_object.dart';
 
