@@ -1,6 +1,13 @@
 # DUTWRAPPER CHANGE LOG
 
-This file will list all version log for modified, added or removed functions of dutwrapper (Dart language).
+This file will list all version log for modified, added or removed functions of dutwrapper - flutter/dart language.
+
+## 1.0.3
+- Add 3 options in news fetching:
+  - Student affairs news
+  - Examination news
+  - Tuition fee news
+- Add `toMarkdown()` in global news for quick generate markdown version.
 
 ## 1.0.2
 - New DUT Wrapper exception.
@@ -8,6 +15,7 @@ This file will list all version log for modified, added or removed functions of 
 
 ## 1.0.1
 - Add option for search query in `News` class.
+- Optimize codes.
 
 ## 1.0.0
 - Functions in `Account` class have no more `RequestResult` returns. This class has been removed.

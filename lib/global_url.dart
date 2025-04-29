@@ -7,7 +7,31 @@ class GlobalUrl {
     NewsSearchMethod searchType = NewsSearchMethod.byTitle,
     String? query,
   }) {
-    return "${baseLink()}/WebAjax/evLopHP_Load.aspx?E=${(newsType == NewsType.global) ? 'CTRTBSV' : 'CTRTBGV'}&PAGETB=$page&COL=${searchType == NewsSearchMethod.byTitle ? "TieuDe" : "NoiDung"}&NAME=${query ?? ""}&TAB=0";
+    // Parameter - E
+    String e = switch (newsType) {
+      NewsType.subject => "CTRTBGV",
+      NewsType.unknown => "",
+      _ => "CTRTBSV",
+    };
+
+    // Parameter - COL
+    String col = switch (searchType) {
+      NewsSearchMethod.byTitle => "TieuDe",
+      NewsSearchMethod.byContent => "NoiDung",
+    };
+
+    // Parameter - TAB
+    String tab = switch (newsType) {
+      NewsType.global => "0",
+      NewsType.subject => "1",
+      NewsType.studentAffairs => "2",
+      NewsType.examination => "3",
+      NewsType.tuitionFee => "4",
+      _ => "-1",
+    };
+
+    return "${baseLink()}/WebAjax/evLopHP_Load.aspx?"
+        "E=${e}&PAGETB=${page}&COL=${col}&NAME=${query ?? ""}&TAB=${tab}";
   }
 
   static String subjectScheduleLink({
