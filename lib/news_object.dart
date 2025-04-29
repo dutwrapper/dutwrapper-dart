@@ -26,6 +26,21 @@ class NewsGlobal {
     required this.resources,
   });
 
+  String toMarkdown() {
+    String result = content;
+    var resTemp = resources.reversed.where((p) => p.type == "link").toList();
+
+    for (var linkItem in resTemp) {
+      result = result.replaceRange(
+        linkItem.position,
+        linkItem.position + linkItem.text.length,
+        "[${linkItem.text}](${linkItem.content})",
+      );
+    }
+
+    return result;
+  }
+
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
@@ -50,8 +65,7 @@ class NewsGlobal {
 
   String toJson() => json.encode(toMap());
 
-  factory NewsGlobal.fromJson(String source) =>
-      NewsGlobal.fromMap(json.decode(source));
+  factory NewsGlobal.fromJson(String source) => NewsGlobal.fromMap(json.decode(source));
 }
 
 class NewsResource {
@@ -89,8 +103,7 @@ class NewsResource {
 
   String toJson() => json.encode(toMap());
 
-  factory NewsResource.fromJson(String source) =>
-      NewsResource.fromMap(json.decode(source));
+  factory NewsResource.fromJson(String source) => NewsResource.fromMap(json.decode(source));
 }
 
 class NewsSubject extends NewsGlobal {
@@ -136,8 +149,7 @@ class NewsSubject extends NewsGlobal {
     result.addAll({'content': super.content});
     result.addAll({'date': super.date});
     result.addAll({'resources': super.resources.map((x) => x.toMap()).toList()});
-    result.addAll(
-        {'affected_class': affectedClasses.map((x) => x.toMap()).toList()});
+    result.addAll({'affected_class': affectedClasses.map((x) => x.toMap()).toList()});
     result.addAll({'affected_date': affectedDate});
     result.addAll({'affected_lessons': affectedLessons});
     result.addAll({'status': lessonStatus.value});
@@ -155,20 +167,17 @@ class NewsSubject extends NewsGlobal {
       content: map['content'] ?? '',
       date: map['date']?.toInt() ?? 0,
       resources: List<NewsResource>.from(map['resources']?.map((x) => NewsResource.fromMap(x))),
-      affectedClasses: List<SubjectAffected>.from(
-          map['affected_class']?.map((x) => SubjectAffected.fromMap(x))),
+      affectedClasses: List<SubjectAffected>.from(map['affected_class']?.map((x) => SubjectAffected.fromMap(x))),
       affectedDate: map['affected_date']?.toInt() ?? 0,
       lessonStatus: LessonStatus.values.firstWhere(
-            (element) => element.value == (map['status'] ?? 0),
+        (element) => element.value == (map['status'] ?? 0),
         orElse: () => LessonStatus.unknown,
       ),
-      affectedLessons: map['affectedLessons'] != null
-          ? RangeInt.fromMap(map['affected_lessons'])
-          : RangeInt(start: 0, end: 0),
+      affectedLessons: map['affectedLessons'] != null ? RangeInt.fromMap(map['affected_lessons']) : RangeInt(start: 0, end: 0),
       affectedRoom: map['makeup_room'] ?? '',
       lecturerName: map['lecturer_name'] ?? '',
       lecturerGender: LecturerGender.values.firstWhere(
-            (element) => element.value == (map['lecturer_gender'] ?? 0),
+        (element) => element.value == (map['lecturer_gender'] ?? 0),
         orElse: () => LecturerGender.unknown,
       ),
     );
@@ -177,8 +186,7 @@ class NewsSubject extends NewsGlobal {
   @override
   String toJson() => json.encode(toMap());
 
-  factory NewsSubject.fromJson(String source) =>
-      NewsSubject.fromMap(json.decode(source));
+  factory NewsSubject.fromJson(String source) => NewsSubject.fromMap(json.decode(source));
 }
 
 class SubjectAffected {
@@ -210,14 +218,12 @@ class SubjectAffected {
 
   factory SubjectAffected.fromMap(Map<String, dynamic> map) {
     return SubjectAffected(
-      codeList: List<SubjectCode>.from(
-          map['code_list']?.map((x) => SubjectCode.fromMap(x))),
+      codeList: List<SubjectCode>.from(map['code_list']?.map((x) => SubjectCode.fromMap(x))),
       subjectName: map['name'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SubjectAffected.fromJson(String source) =>
-      SubjectAffected.fromMap(json.decode(source));
+  factory SubjectAffected.fromJson(String source) => SubjectAffected.fromMap(json.decode(source));
 }

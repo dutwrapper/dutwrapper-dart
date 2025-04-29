@@ -1,6 +1,6 @@
 name: dutwrapper
 description: An unofficial wrapper for easier to use at sv.dut.udn.vn - Da Nang University of Technology student page.
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/dutwrapper/dutwrapper-dart
 
 environment:
@@ -9,10 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  html: ^0.15.5
+  html: ^0.15.6
   http: ^1.3.0
   collection: ^1.19.1
-  connectivity_plus: ^6.1.3
+  connectivity_plus: ^6.1.4
 
 dev_dependencies:
   flutter_test:

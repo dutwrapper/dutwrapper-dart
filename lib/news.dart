@@ -58,6 +58,45 @@ class News {
     );
   }
 
+  static Future<List<NewsGlobal>> getNewsStudentAffairs({
+    int page = 1,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
+  }) async {
+    return await _getNews(
+      page: page,
+      newsType: NewsType.studentAffairs,
+      newsSearchMethod: newsSearchMethod,
+      newsSearchQuery: newsSearchQuery,
+    );
+  }
+
+  static Future<List<NewsGlobal>> getNewsExamination({
+    int page = 1,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
+  }) async {
+    return await _getNews(
+      page: page,
+      newsType: NewsType.examination,
+      newsSearchMethod: newsSearchMethod,
+      newsSearchQuery: newsSearchQuery,
+    );
+  }
+
+  static Future<List<NewsGlobal>> getNewsTuitionFee({
+    int page = 1,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
+  }) async {
+    return await _getNews(
+      page: page,
+      newsType: NewsType.tuitionFee,
+      newsSearchMethod: newsSearchMethod,
+      newsSearchQuery: newsSearchQuery,
+    );
+  }
+
   static Future<List<NewsSubject>> getNewsSubject({
     int page = 1,
     NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
@@ -129,8 +168,7 @@ class News {
     docHtml.getElementsByTagName('a').forEach((element) {
       if (contentTemp.contains(element.text)) {
         position += contentTemp.indexOf(element.text);
-        NewsResource newsLink =
-            NewsResource(text: element.text, position: position, type: 'link', content: element.attributes['href']!);
+        NewsResource newsLink = NewsResource(text: element.text, position: position, type: 'link', content: element.attributes['href']!);
         resources.add(newsLink);
 
         position += element.text.length;
@@ -276,8 +314,7 @@ class News {
     RegExp regExp = RegExp('\\d{2}[-|/]\\d{2}[-|/]\\d{4}');
     var firstMatch = regExp.firstMatch(tbContent);
     if (firstMatch != null) {
-      final dateTime =
-          DateTime.parse(tbContent.substring(firstMatch.start, firstMatch.end).split('/').reversed.toList().join('-'));
+      final dateTime = DateTime.parse(tbContent.substring(firstMatch.start, firstMatch.end).split('/').reversed.toList().join('-'));
       return dateTime.millisecondsSinceEpoch;
     }
 
@@ -297,13 +334,7 @@ class News {
     RegExp regExp = RegExp('phòng:.*');
     var firstMatch = regExp.firstMatch(tbContent.toLowerCase());
     if (firstMatch != null) {
-      return tbContent
-          .toLowerCase()
-          .substring(firstMatch.start, firstMatch.end)
-          .replaceFirst('phòng:', '')
-          .replaceFirst(',', '')
-          .trim()
-          .toUpperCase();
+      return tbContent.toLowerCase().substring(firstMatch.start, firstMatch.end).replaceFirst('phòng:', '').replaceFirst(',', '').trim().toUpperCase();
     }
 
     // If doesn't find anything, return empty string.

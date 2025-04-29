@@ -40,16 +40,16 @@ void main() {
     checkResponse.ensureSuccessfulStatusCode();
 
     // Get session
-    debugPrint('\nGetting new session...');
+    debugPrintSynchronously('\nGetting new session...');
     AccountSession session = await Accounts.generateNewSession();
-    debugPrint(session.toJson());
+    debugPrintSynchronously(session.toJson());
 
     // Check if logged in before
-    debugPrint('\nChecking if this session has been logged in before...');
-    debugPrint((await Accounts.isLoggedIn(session: session)).toString());
+    debugPrintSynchronously('\nChecking if this session has been logged in before...');
+    debugPrintSynchronously((await Accounts.isLoggedIn(session: session)).toString());
 
     // Login and check again
-    debugPrint('\nLogging in...');
+    debugPrintSynchronously('\nLogging in...');
     Accounts.login(
       session: session,
       authInfo: AuthInfo(
@@ -57,9 +57,9 @@ void main() {
         password: env1.split('|')[1],
       ),
     );
-    debugPrint('Done! Now checking if session has been logged in...');
+    debugPrintSynchronously('Done! Now checking if session has been logged in...');
     var loggedIn1 = await Accounts.isLoggedIn(session: session);
-    debugPrint(loggedIn1.toString());
+    debugPrintSynchronously(loggedIn1.toString());
     if (loggedIn1 != LoginStatus.loggedIn) {
       throw DutWrapperException(
         message: 'Sorry, your login information is incorrect. This test cannot continue...',
@@ -68,9 +68,9 @@ void main() {
     }
 
     // Fetch subject information
-    debugPrint('\nFetching subject information...');
+    debugPrintSynchronously('\nFetching subject information...');
     if (FETCH_SUBJECT_INFORMATION) {
-      debugPrint(jsonEncode(await Accounts.fetchSubjectInformation(
+      debugPrintSynchronously(jsonEncode(await Accounts.fetchSubjectInformation(
         session: session,
         year: SUBJECT_SCHEDULE_YEAR,
         semester: SUBJECT_SCHEDULE_SEMESTER,
@@ -78,9 +78,9 @@ void main() {
     }
 
     // Fetch subject fee
-    debugPrint('\nFetching subject fee...');
+    debugPrintSynchronously('\nFetching subject fee...');
     if (FETCH_SUBJECT_FEE) {
-      debugPrint(jsonEncode(await Accounts.fetchSubjectFee(
+      debugPrintSynchronously(jsonEncode(await Accounts.fetchSubjectFee(
         session: session,
         year: SUBJECT_SCHEDULE_YEAR,
         semester: SUBJECT_SCHEDULE_SEMESTER,
@@ -88,23 +88,23 @@ void main() {
     }
 
     // Fetch student information
-    debugPrint('\nFetching student information...');
+    debugPrintSynchronously('\nFetching student information...');
     if (FETCH_STUDENT_INFORMATION) {
-      debugPrint((await Accounts.fetchStudentInformation(session: session)).toJson());
+      debugPrintSynchronously((await Accounts.fetchStudentInformation(session: session)).toJson());
     }
 
     // Fetch training result
-    debugPrint('\nFetching training result...');
+    debugPrintSynchronously('\nFetching training result...');
     if (FETCH_TRAINING_RESULT) {
-      debugPrint((await Accounts.fetchTrainingResult(session: session)).toJson());
+      debugPrintSynchronously((await Accounts.fetchTrainingResult(session: session)).toJson());
     }
 
     // Logout and ensure logged out
-    debugPrint('\nLogging out...');
+    debugPrintSynchronously('\nLogging out...');
     await Accounts.logout(session: session);
-    debugPrint('Done! Now checking if session has been logged out...');
-    debugPrint((await Accounts.isLoggedIn(session: session)).toString());
+    debugPrintSynchronously('Done! Now checking if session has been logged out...');
+    debugPrintSynchronously((await Accounts.isLoggedIn(session: session)).toString());
 
-    debugPrint('\nThis test has been finished!\n');
+    debugPrintSynchronously('\nThis test has been finished!\n');
   });
 }
