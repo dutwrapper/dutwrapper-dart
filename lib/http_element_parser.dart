@@ -26,6 +26,19 @@ extension ElementParser on Element? {
     return getTextOrEmpty().isEmpty;
   }
 
+  List<Element> getOptionListInComboBox() {
+    if (this == null) {
+      return [];
+    }
+
+    var optionList = this!.getElementsByTagName('option');
+    if (optionList.isEmpty) {
+      return [];
+    }
+
+    return optionList;
+  }
+
   Element? getSelectedOptionInComboBox() {
     if (this == null) {
       return null;
@@ -36,8 +49,7 @@ extension ElementParser on Element? {
       return null;
     }
 
-    return optionList.firstWhereOrNull(
-        (element) => element.attributes.containsKey('selected'));
+    return optionList.firstWhereOrNull((element) => element.attributes.containsKey('selected'));
   }
 
   bool isGridChecked() {

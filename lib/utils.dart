@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -11,19 +12,13 @@ import 'lib_exception.dart';
 import 'utils_object.dart';
 
 class Utils {
-  static int getCurrentTimeUnixMilliseconds() {
-    return DateTime.now().millisecondsSinceEpoch;
-  }
-
   static Future<HttpClientResponse> checkPageStatus({int timeout = 60}) async {
     return HttpClientWrapper.get(uri: Uri.parse(GlobalUrl.baseLink()));
   }
 
   static Future<DutSchoolYear?> getCurrentSchoolYear({int timeout = 60}) async {
     try {
-      final response = await http
-          .get(Uri.parse(GlobalUrl.dutSchedulePage()))
-          .timeout(Duration(seconds: timeout));
+      final response = await http.get(Uri.parse(GlobalUrl.dutSchedulePage())).timeout(Duration(seconds: timeout));
 
       // Main processing
       var webDoc = parse(response.body);
@@ -32,11 +27,10 @@ class Utils {
       int? schYearVal;
       String? schYear;
       int? week;
+      int? firstDateWeek;
 
       // School year item processing
-      var cbbYear = webDoc
-          .getElementById("dnn_ctr442_View_cboNamhoc")
-          .getSelectedOptionInComboBox();
+      var cbbYear = webDoc.getElementById("dnn_ctr442_View_cboNamhoc").getSelectedOptionInComboBox();
       if (cbbYear == null) {
         throw DutWrapperException(
           message: "We can't receive any information about this request! "
@@ -49,9 +43,8 @@ class Utils {
       }
 
       // Week item processing
-      var cbbWeek = webDoc
-          .getElementById("dnn_ctr442_View_cboTuan")
-          .getSelectedOptionInComboBox();
+      var cbbWeek =
+          webDoc.getElementById("dnn_ctr442_View_cboTuan").getOptionListInComboBox().firstWhereOrNull((p) => p.text.toLowerCase().contains("tuần thứ 1"));
       if (cbbWeek == null) {
         throw DutWrapperException(
           message: "We can't receive any information about this request! "
@@ -59,20 +52,35 @@ class Utils {
           reason: DutWrapperExceptionReason.dataNotFoundException,
         );
       } else {
-        RegExp regex =
-            RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
+        RegExp regex = RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
         if (regex.hasMatch(cbbWeek.text)) {
           var match1 = regex.firstMatch(cbbWeek.text)!;
           week = int.parse(match1.group(1)!);
+
+          final dateFirstWeekString = match1.group(2)?.split('/') ?? [];
+          if (dateFirstWeekString.length != 3) {
+            // TODO: Exception when invalid date format.
+            throw Exception();
+          }
+          final currentDate = DateTime.now().toUtc();
+          final dateFirstWeek = DateTime.utc(
+            int.parse(dateFirstWeekString.elementAt(2)),
+            int.parse(dateFirstWeekString.elementAt(1)),
+            int.parse(dateFirstWeekString.elementAt(0)),
+          ).add(Duration(hours: -7));
+
+          firstDateWeek = dateFirstWeek.millisecondsSinceEpoch;
+          week = ((currentDate.millisecondsSinceEpoch - dateFirstWeek.millisecondsSinceEpoch) / (1000 * 60 * 60 * 24 * 7) + 1).toInt();
         }
       }
 
       // schYearVal != null
-      if (schYear != null && week != null) {
+      if (schYear != null && week != null && firstDateWeek != null) {
         result = DutSchoolYear(
           schoolYear: schYear,
           schoolYearVal: schYearVal,
           week: week,
+          firstWeekDate: firstDateWeek,
         );
       }
 
@@ -88,15 +96,7 @@ class Utils {
     int dayOfweek = 1,
     bool fullString = false,
   }) {
-    var dataFull = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday"
-    ];
+    var dataFull = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     var dataShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     if (dayOfweek > 7 || dayOfweek < 1) {
@@ -119,7 +119,7 @@ class Utils {
     return isConnected;
   }
 
-  static Future<void> ensureServerWorking() async {
+  static Future<void> ensureNetworkHaveInternet() async {
     debugPrint("Checking internet access...");
     if (!await _checkDomain("example.com")) {
       throw DutWrapperException(
@@ -128,15 +128,17 @@ class Utils {
         reason: DutWrapperExceptionReason.internetNotFound,
       );
     }
-    debugPrint("Checking sv.dut.udn.vn...");
+  }
+
+  static Future<void> ensureNetworkDutSvOnline() async {
+    // debugPrint("Checking sv.dut.udn.vn...");
     if (!await _checkDomain("sv.dut.udn.vn")) {
       throw DutWrapperException(
-        message: "Looks like you have an internet connection, "
-            "but can't connect to sv.dut.udn.vn server. Try again later. "
+        message: "Looks like we can't connect to sv.dut.udn.vn server. "
+            "Try again later. "
             "You might need to check your internet settings again to confirm.",
-        reason: DutWrapperExceptionReason.internetNotFound,
+        reason: DutWrapperExceptionReason.serverNotFound,
       );
     }
-    debugPrint("It looks like you have connected to sv.dut.udn.vn.");
   }
 }

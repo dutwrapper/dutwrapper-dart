@@ -12,6 +12,7 @@ void main() {
       debugPrintSynchronously('School year: ${value.schoolYear}');
       debugPrintSynchronously('School year value: ${value.schoolYearVal}');
       debugPrintSynchronously('Week: ${value.week}');
+      debugPrintSynchronously('First week date: ${DateTime.fromMillisecondsSinceEpoch(value.firstWeekDate, isUtc: true).toString()}');
     } else {
       debugPrintSynchronously('Fetch failed!');
     }
@@ -29,7 +30,8 @@ void main() {
 
   test('Check if have internet', () async {
     debugPrintSynchronously('Checking...');
-    Utils.ensureServerWorking();
+    await Utils.ensureNetworkHaveInternet();
+    await Utils.ensureNetworkDutSvOnline();
     debugPrintSynchronously('If you reached here, you have connected to sv.dut.udn.vn.');
   });
 }
