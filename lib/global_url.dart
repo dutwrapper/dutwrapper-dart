@@ -27,6 +27,7 @@ class GlobalUrl {
       NewsType.studentAffairs => "2",
       NewsType.examination => "3",
       NewsType.tuitionFee => "4",
+      NewsType.statutePolicy => "5",
       _ => "-1",
     };
 
@@ -56,7 +57,7 @@ class GlobalUrl {
     return "${baseLink()}/WebAjax/evLopHP_Load.aspx?E=THPhiLoad&Code=$code";
   }
 
-  static String baseLink() => "http://sv.dut.udn.vn";
+  static String baseLink() => "https://sv.dut.udn.vn";
 
   static String loginLink() => "${baseLink()}/PageDangNhap.aspx";
 
@@ -66,5 +67,5 @@ class GlobalUrl {
 
   static String trainingStatusLink() => "${baseLink()}/PageKQRL.aspx";
 
-  static String dutSchedulePage() => "http://dut.udn.vn/Lichtuan";
+  static String dutSchedulePage() => "https://lichtuan.dut.udn.vn/home";
 }

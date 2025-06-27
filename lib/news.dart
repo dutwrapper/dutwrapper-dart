@@ -97,6 +97,19 @@ class News {
     );
   }
 
+  static Future<List<NewsGlobal>> getNewsStatutePolicy({
+    int page = 1,
+    NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,
+    String? newsSearchQuery,
+  }) async {
+    return await _getNews(
+      page: page,
+      newsType: NewsType.statutePolicy,
+      newsSearchMethod: newsSearchMethod,
+      newsSearchQuery: newsSearchQuery,
+    );
+  }
+
   static Future<List<NewsSubject>> getNewsSubject({
     int page = 1,
     NewsSearchMethod newsSearchMethod = NewsSearchMethod.byTitle,

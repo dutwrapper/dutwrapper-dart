@@ -29,8 +29,9 @@ void main() {
   });
 
   test('Check if have internet', () async {
-    debugPrintSynchronously('Checking...');
+    debugPrintSynchronously('Checking you have internet...');
     await Utils.ensureNetworkHaveInternet();
+    debugPrintSynchronously('Checking dut server is online...');
     await Utils.ensureNetworkDutSvOnline();
     debugPrintSynchronously('If you reached here, you have connected to sv.dut.udn.vn.');
   });

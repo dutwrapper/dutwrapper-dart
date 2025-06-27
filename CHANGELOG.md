@@ -1,6 +1,12 @@
 # DUTWRAPPER CHANGE LOG
 
-This file will list all version log for modified, added or removed functions of dutwrapper - flutter/dart language.
+This will list all version log for modified, added or removed functions of dutwrapper (flutter/dart).
+
+## 1.1.0
+- Add an option in news fetching:
+  - Statute and policy
+- Fixed an issue in `Utils.getCurrentSchoolYear()` (because of page element changed).
+- Moved all links to `https` (because page is replaced from `http` to `https`).
 
 ## 1.0.3
 - Add 3 options in news fetching:

@@ -30,7 +30,7 @@ class Utils {
       int? firstDateWeek;
 
       // School year item processing
-      var cbbYear = webDoc.getElementById("dnn_ctr442_View_cboNamhoc").getSelectedOptionInComboBox();
+      var cbbYear = webDoc.getElementById("year-select").getSelectedOptionInComboBox();
       if (cbbYear == null) {
         throw DutWrapperException(
           message: "We can't receive any information about this request! "
@@ -38,13 +38,12 @@ class Utils {
           reason: DutWrapperExceptionReason.dataNotFoundException,
         );
       } else {
-        schYear = cbbYear.getText();
-        schYearVal = int.parse(cbbYear.getValue() ?? "0");
+        schYear = cbbYear.getText()?.replaceAll(' ', '').trim();
+        schYearVal = int.parse(schYear?.split('-')[0].substring(2) ?? '0');
       }
 
       // Week item processing
-      var cbbWeek =
-          webDoc.getElementById("dnn_ctr442_View_cboTuan").getOptionListInComboBox().firstWhereOrNull((p) => p.text.toLowerCase().contains("tuần thứ 1"));
+      var cbbWeek = webDoc.getElementById("week-container").getOptionListInComboBox().firstWhereOrNull((p) => p.text.toLowerCase().contains("tuần 1"));
       if (cbbWeek == null) {
         throw DutWrapperException(
           message: "We can't receive any information about this request! "
@@ -52,26 +51,40 @@ class Utils {
           reason: DutWrapperExceptionReason.dataNotFoundException,
         );
       } else {
-        RegExp regex = RegExp("Tuần thứ (\\d{1,2}): (\\d{1,2}\\/\\d{1,2}\\/\\d{4})");
-        if (regex.hasMatch(cbbWeek.text)) {
-          var match1 = regex.firstMatch(cbbWeek.text)!;
-          week = int.parse(match1.group(1)!);
+        // RegExp regex = RegExp("Tuần (\\d{1,2}) : (\\d{1,2}-\\d{1,2}-\\d{4})");
+        // if (regex.hasMatch(cbbWeek.text)) {
+        //   var match1 = regex.firstMatch(cbbWeek.text)!;
+        //   week = int.parse(match1.group(1)!);
 
-          final dateFirstWeekString = match1.group(2)?.split('/') ?? [];
-          if (dateFirstWeekString.length != 3) {
-            // TODO: Exception when invalid date format.
-            throw Exception();
-          }
-          final currentDate = DateTime.now().toUtc();
-          final dateFirstWeek = DateTime.utc(
-            int.parse(dateFirstWeekString.elementAt(2)),
-            int.parse(dateFirstWeekString.elementAt(1)),
-            int.parse(dateFirstWeekString.elementAt(0)),
-          ).add(Duration(hours: -7));
+        //   final dateFirstWeekString = match1.group(2)?.split('-') ?? [];
+        //   if (dateFirstWeekString.length != 3) {
+        //     // TODO: Exception when invalid date format.
+        //     throw Exception();
+        //   }
+        //   final currentDate = DateTime.now().toUtc();
+        //   final dateFirstWeek = DateTime.utc(
+        //     int.parse(dateFirstWeekString.elementAt(2)),
+        //     int.parse(dateFirstWeekString.elementAt(1)),
+        //     int.parse(dateFirstWeekString.elementAt(0)),
+        //   ).add(Duration(hours: -7));
 
-          firstDateWeek = dateFirstWeek.millisecondsSinceEpoch;
-          week = ((currentDate.millisecondsSinceEpoch - dateFirstWeek.millisecondsSinceEpoch) / (1000 * 60 * 60 * 24 * 7) + 1).toInt();
+        //   firstDateWeek = dateFirstWeek.millisecondsSinceEpoch;
+        //   week = ((currentDate.millisecondsSinceEpoch - dateFirstWeek.millisecondsSinceEpoch) / (1000 * 60 * 60 * 24 * 7) + 1).toInt();
+        // }
+        final dateFirstWeekString = cbbWeek.text.split(':')[1].trim().split('-');
+        if (dateFirstWeekString.length != 3) {
+          // TODO: Exception when invalid date format.
+          throw Exception();
         }
+        final currentDate = DateTime.now().toUtc();
+        final dateFirstWeek = DateTime.utc(
+          int.parse(dateFirstWeekString.elementAt(2)),
+          int.parse(dateFirstWeekString.elementAt(1)),
+          int.parse(dateFirstWeekString.elementAt(0)),
+        ).add(Duration(hours: -7));
+
+        firstDateWeek = dateFirstWeek.millisecondsSinceEpoch;
+        week = ((currentDate.millisecondsSinceEpoch - dateFirstWeek.millisecondsSinceEpoch) / (1000 * 60 * 60 * 24 * 7) + 1).toInt();
       }
 
       // schYearVal != null
@@ -119,9 +132,29 @@ class Utils {
     return isConnected;
   }
 
-  static Future<void> ensureNetworkHaveInternet() async {
+  static Future<bool> _checkWebOnline({
+    required String domain,
+    int timeout = 15,
+  }) async {
+    bool isConnected = false;
+    try {
+      if (!(await _checkDomain(domain))) {
+        throw Exception();
+      }
+
+      final response = await HttpClientWrapper.get(
+        uri: Uri.parse("https://$domain"),
+        timeout: timeout,
+      );
+      var _ = response.body;
+      isConnected = response.isSuccessfulStatusCode;
+    } catch (_) {}
+    return isConnected;
+  }
+
+  static Future<void> ensureNetworkHaveInternet({int timeout = 15}) async {
     debugPrint("Checking internet access...");
-    if (!await _checkDomain("example.com")) {
+    if (!await _checkWebOnline(domain: "example.com")) {
       throw DutWrapperException(
         message: "Looks like you don't have an internet connection. "
             "Check your internet settings, and try again.",
@@ -130,9 +163,9 @@ class Utils {
     }
   }
 
-  static Future<void> ensureNetworkDutSvOnline() async {
+  static Future<void> ensureNetworkDutSvOnline({int timeout = 15}) async {
     // debugPrint("Checking sv.dut.udn.vn...");
-    if (!await _checkDomain("sv.dut.udn.vn")) {
+    if (!await _checkWebOnline(domain: "sv.dut.udn.vn")) {
       throw DutWrapperException(
         message: "Looks like we can't connect to sv.dut.udn.vn server. "
             "Try again later. "

@@ -51,9 +51,13 @@ enum NewsType {
   /// examination schedules, review, and student opinion surveys
   examination(3),
 
-  /// Học phí - lệ phí;
+  /// Tuition fee - Học phí - lệ phí;
   /// Notifications about tuition fee
-  tuitionFee(4);
+  tuitionFee(4),
+
+  /// Statute and Policy - Quy chế và Quy định
+  /// Notifications about statue and policy
+  statutePolicy(5);
 
   const NewsType(this.value);
   final int value;

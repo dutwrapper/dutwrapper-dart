@@ -13,7 +13,7 @@ void main() {
       final response = await News.getNewsGlobal(page: i);
 
       if (response.isNotEmpty) {
-        debugPrintSynchronously('Subject list: ${response.length}');
+        debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
           debugPrintSynchronously('Date: ${element.date}');
@@ -38,7 +38,7 @@ void main() {
       final response = await News.getNewsSubject(page: i);
 
       if (response.isNotEmpty) {
-        debugPrintSynchronously('Subject list: ${response.length}');
+        debugPrintSynchronously('Subject news list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
           debugPrintSynchronously('Date: ${element.date}');
@@ -73,7 +73,7 @@ void main() {
       final response = await News.getNewsStudentAffairs(page: i);
 
       if (response.isNotEmpty) {
-        debugPrintSynchronously('Subject list: ${response.length}');
+        debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
           debugPrintSynchronously('Date: ${element.date}');
@@ -98,7 +98,7 @@ void main() {
       final response = await News.getNewsExamination(page: i);
 
       if (response.isNotEmpty) {
-        debugPrintSynchronously('Subject list: ${response.length}');
+        debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
           debugPrintSynchronously('Date: ${element.date}');
@@ -123,7 +123,32 @@ void main() {
       final response = await News.getNewsTuitionFee(page: i);
 
       if (response.isNotEmpty) {
-        debugPrintSynchronously('Subject list: ${response.length}');
+        debugPrintSynchronously('News list: ${response.length}');
+        for (var element in response) {
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
+          for (var link in element.resources) {
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+          }
+        }
+      } else {
+        debugPrintSynchronously('Nothing in list!');
+      }
+    }
+  });
+
+  test('News - Statute and policy', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
+    for (int i = 1; i <= 5; i++) {
+      debugPrintSynchronously('== GET NEWS - STATUTE AND POLICY - PAGE $i =');
+      final response = await News.getNewsStatutePolicy(page: i);
+
+      if (response.isNotEmpty) {
+        debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
           debugPrintSynchronously('Date: ${element.date}');

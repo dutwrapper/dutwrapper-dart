@@ -50,7 +50,7 @@ void main() {
 
     // Login and check again
     debugPrintSynchronously('\nLogging in...');
-    Accounts.login(
+    await Accounts.login(
       session: session,
       authInfo: AuthInfo(
         username: env1.split('|')[0],
