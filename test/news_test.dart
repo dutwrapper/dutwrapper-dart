@@ -1,3 +1,4 @@
+import 'package:dutwrapper/enums.dart';
 import 'package:dutwrapper/news.dart';
 import 'package:dutwrapper/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -10,13 +11,14 @@ void main() {
 
     for (int i = 1; i <= 5; i++) {
       debugPrintSynchronously('======= GET GLOBAL NEWS - PAGE $i ========');
-      final response = await News.getNewsGlobal(page: i);
+      final response = await News.getNews(newsType: NewsType.global, page: i);
 
       if (response.isNotEmpty) {
         debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
-          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
           debugPrintSynchronously('Title: ${element.title}');
           debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
@@ -35,13 +37,14 @@ void main() {
 
     for (int i = 1; i <= 5; i++) {
       debugPrintSynchronously('======= GET SUBJECT NEWS - PAGE $i =======');
-      final response = await News.getNewsSubject(page: i);
+      final response = (await News.getNews(newsType: NewsType.subject, page: i)).map((p) => p.convertToNewsSubject()).toList();
 
       if (response.isNotEmpty) {
         debugPrintSynchronously('Subject news list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
-          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
           debugPrintSynchronously('Title: ${element.title}');
           debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
@@ -70,13 +73,14 @@ void main() {
 
     for (int i = 1; i <= 5; i++) {
       debugPrintSynchronously('=== GET NEWS - STUDENT AFFAIRS - PAGE $i ===');
-      final response = await News.getNewsStudentAffairs(page: i);
+      final response = await News.getNews(newsType: NewsType.studentAffairs, page: i);
 
       if (response.isNotEmpty) {
         debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
-          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
           debugPrintSynchronously('Title: ${element.title}');
           debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
@@ -95,13 +99,14 @@ void main() {
 
     for (int i = 1; i <= 5; i++) {
       debugPrintSynchronously('===== GET NEWS - EXAMINATION - PAGE $i =====');
-      final response = await News.getNewsExamination(page: i);
+      final response = await News.getNews(newsType: NewsType.examination, page: i);
 
       if (response.isNotEmpty) {
         debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
-          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
           debugPrintSynchronously('Title: ${element.title}');
           debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
@@ -120,13 +125,14 @@ void main() {
 
     for (int i = 1; i <= 5; i++) {
       debugPrintSynchronously('===== GET NEWS - TUITION FEE - PAGE $i =====');
-      final response = await News.getNewsTuitionFee(page: i);
+      final response = await News.getNews(newsType: NewsType.tuitionFee, page: i);
 
       if (response.isNotEmpty) {
         debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
-          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
           debugPrintSynchronously('Title: ${element.title}');
           debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
@@ -145,13 +151,14 @@ void main() {
 
     for (int i = 1; i <= 5; i++) {
       debugPrintSynchronously('== GET NEWS - STATUTE AND POLICY - PAGE $i =');
-      final response = await News.getNewsStatutePolicy(page: i);
+      final response = await News.getNews(newsType: NewsType.statuteRegulation, page: i);
 
       if (response.isNotEmpty) {
         debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
           debugPrintSynchronously('========================================');
-          debugPrintSynchronously('Date: ${element.date}');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
           debugPrintSynchronously('Title: ${element.title}');
           debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {

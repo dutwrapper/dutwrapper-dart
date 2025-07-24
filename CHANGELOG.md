@@ -2,6 +2,10 @@
 
 This will list all version log for modified, added or removed functions of dutwrapper (flutter/dart).
 
+## 1.2.0
+- Merge all news to `NewsCore`. Merge all fetching news to `getNews()`.
+- Fixed an issue cause missing `affectedLessons` when parse to `NewsSubject`.
+
 ## 1.1.0
 - Add an option in news fetching:
   - Statute and policy

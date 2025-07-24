@@ -88,7 +88,8 @@ class Utils {
       }
 
       // schYearVal != null
-      if (schYear != null && week != null && firstDateWeek != null) {
+      if (schYear != null) {
+        // remove && week != null && firstDateWeek != null as already passed
         result = DutSchoolYear(
           schoolYear: schYear,
           schoolYearVal: schYearVal,

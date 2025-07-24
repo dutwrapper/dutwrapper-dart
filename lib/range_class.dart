@@ -19,8 +19,8 @@ abstract class Range<T> {
 
 class RangeInt extends Range<int> {
   RangeInt({
-    super.start = 0,
-    super.end = 0,
+    super.start = -1,
+    super.end = -1,
   });
 
   @override
@@ -46,6 +46,5 @@ class RangeInt extends Range<int> {
 
   String toJson() => json.encode(toMap());
 
-  factory RangeInt.fromJson(String source) =>
-      RangeInt.fromMap(json.decode(source));
+  factory RangeInt.fromJson(String source) => RangeInt.fromMap(json.decode(source));
 }

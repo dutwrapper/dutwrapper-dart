@@ -15,21 +15,10 @@ class GlobalUrl {
     };
 
     // Parameter - COL
-    String col = switch (searchType) {
-      NewsSearchMethod.byTitle => "TieuDe",
-      NewsSearchMethod.byContent => "NoiDung",
-    };
+    String col = searchType.toString();
 
     // Parameter - TAB
-    String tab = switch (newsType) {
-      NewsType.global => "0",
-      NewsType.subject => "1",
-      NewsType.studentAffairs => "2",
-      NewsType.examination => "3",
-      NewsType.tuitionFee => "4",
-      NewsType.statutePolicy => "5",
-      _ => "-1",
-    };
+    String tab = newsType.value.toString();
 
     return "${baseLink()}/WebAjax/evLopHP_Load.aspx?"
         "E=${e}&PAGETB=${page}&COL=${col}&NAME=${query ?? ""}&TAB=${tab}";

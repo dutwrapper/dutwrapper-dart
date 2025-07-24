@@ -55,12 +55,24 @@ enum NewsType {
   /// Notifications about tuition fee
   tuitionFee(4),
 
-  /// Statute and Policy - Quy chế và Quy định
-  /// Notifications about statue and policy
-  statutePolicy(5);
+  /// Statute and Regulation - Quy chế và Quy định
+  /// Notifications about statue and regulation
+  statuteRegulation(5);
 
   const NewsType(this.value);
   final int value;
+
+  String toString() {
+    return switch (value) {
+      0 => 'global',
+      1 => 'subject',
+      2 => 'student_affairs',
+      3 => 'examination',
+      4 => 'tuition_fee',
+      5 => 'statute_regulation',
+      _ => 'unknown',
+    };
+  }
 }
 
 enum RequestCode {
@@ -83,6 +95,14 @@ enum NewsSearchMethod {
 
   const NewsSearchMethod(this.value);
   final int value;
+
+  String toString() {
+    return switch (value) {
+      0 => "TieuDe",
+      1 => "NoiDung",
+      _ => "unknown",
+    };
+  }
 }
 
 /// Account status while logging in.
