@@ -1,6 +1,6 @@
 name: dutwrapper
 description: An unofficial wrapper for easier to use at sv.dut.udn.vn - Da Nang University of Technology student page.
-version: 1.2.0
+version: 1.2.1
 homepage: https://github.com/dutwrapper/dutwrapper-dart
 
 environment:

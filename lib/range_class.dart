@@ -30,8 +30,8 @@ class RangeInt extends Range<int> {
 
   factory RangeInt.fromMap(Map<String, dynamic> map) {
     return RangeInt(
-      start: map['start'],
-      end: map['end'],
+      start: (map['start'] as int?) ?? 0,
+      end: (map['end'] as int?) ?? 0,
     );
   }
 

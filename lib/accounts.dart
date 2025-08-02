@@ -338,7 +338,7 @@ class Accounts {
       if (schRow.isNotEmpty) {
         for (var row in schRow) {
           var schCell = row.getElementsByClassName('GridCell');
-          if (schCell.length < 10) {
+          if (schCell.length < 9) {
             continue;
           }
 
@@ -348,8 +348,7 @@ class Accounts {
             credit: int.tryParse(schCell[3].text) ?? 0,
             isHighQuality: schCell[4].isGridChecked(),
             price: double.tryParse(schCell[5].text.replaceAll(",", "")) ?? 0,
-            isDebt: schCell[6].isGridChecked(),
-            isReStudy: schCell[7].isGridChecked(),
+            isReStudy: schCell[6].isGridChecked(),
             confirmedPaymentAt: schCell[8].text,
           );
 
