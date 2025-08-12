@@ -2,6 +2,10 @@
 
 This will list all version log for modified, added or removed functions of dutwrapper (flutter/dart).
 
+## 1.2.2
+- Updated `Student information` because of school page changed.
+- Updated dependencies to latest version.
+
 ## 1.2.1
 - Fixed an issue cause can't load `Subject fee` because of incorrect element length.
 

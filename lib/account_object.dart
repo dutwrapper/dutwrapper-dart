@@ -313,9 +313,6 @@ class StudentInformation {
   String gender;
   String ethnicity;
   String nationality;
-  String nationalIdCard;
-  String nationalIdCardIssueDate;
-  String nationalIdCardIssuePlace;
   String citizenIdCard;
   String citizenIdCardIssueDate;
   String religion;
@@ -323,6 +320,7 @@ class StudentInformation {
   String accountBankName;
   String hIId;
   String hIExpireDate;
+  bool hIFreeIssue;
   String specialization;
   String schoolClass;
   String trainingProgramPlan;
@@ -336,7 +334,6 @@ class StudentInformation {
   String addressFrom;
   String addressCity;
   String addressDistrict;
-  String addressSubDistrict;
   String studentId;
 
   StudentInformation({
@@ -346,9 +343,6 @@ class StudentInformation {
     required this.gender,
     required this.ethnicity,
     required this.nationality,
-    required this.nationalIdCard,
-    required this.nationalIdCardIssueDate,
-    required this.nationalIdCardIssuePlace,
     required this.citizenIdCard,
     required this.citizenIdCardIssueDate,
     required this.religion,
@@ -356,6 +350,7 @@ class StudentInformation {
     required this.accountBankName,
     required this.hIId,
     required this.hIExpireDate,
+    required this.hIFreeIssue,
     required this.specialization,
     required this.schoolClass,
     required this.trainingProgramPlan,
@@ -369,7 +364,6 @@ class StudentInformation {
     required this.addressFrom,
     required this.addressCity,
     required this.addressDistrict,
-    required this.addressSubDistrict,
     required this.studentId,
   });
 
@@ -380,9 +374,6 @@ class StudentInformation {
     String? gender,
     String? ethnicity,
     String? nationality,
-    String? nationalIdCard,
-    String? nationalIdCardIssueDate,
-    String? nationalIdCardIssuePlace,
     String? citizenIdCard,
     String? citizenIdCardIssueDate,
     String? religion,
@@ -390,6 +381,7 @@ class StudentInformation {
     String? accountBankName,
     String? hIId,
     String? hIExpireDate,
+    bool? hIFreeIssue,
     String? specialization,
     String? schoolClass,
     String? trainingProgramPlan,
@@ -403,7 +395,6 @@ class StudentInformation {
     String? addressFrom,
     String? addressCity,
     String? addressDistrict,
-    String? addressSubDistrict,
     String? studentId,
   }) {
     return StudentInformation(
@@ -413,9 +404,6 @@ class StudentInformation {
       gender: gender ?? this.gender,
       ethnicity: ethnicity ?? this.ethnicity,
       nationality: nationality ?? this.nationality,
-      nationalIdCard: nationalIdCard ?? this.nationalIdCard,
-      nationalIdCardIssueDate: nationalIdCardIssueDate ?? this.nationalIdCardIssueDate,
-      nationalIdCardIssuePlace: nationalIdCardIssuePlace ?? this.nationalIdCardIssuePlace,
       citizenIdCard: citizenIdCard ?? this.citizenIdCard,
       citizenIdCardIssueDate: citizenIdCardIssueDate ?? this.citizenIdCardIssueDate,
       religion: religion ?? this.religion,
@@ -423,6 +411,7 @@ class StudentInformation {
       accountBankName: accountBankName ?? this.accountBankName,
       hIId: hIId ?? this.hIId,
       hIExpireDate: hIExpireDate ?? this.hIExpireDate,
+      hIFreeIssue: hIFreeIssue ?? this.hIFreeIssue,
       specialization: specialization ?? this.specialization,
       schoolClass: schoolClass ?? this.schoolClass,
       trainingProgramPlan: trainingProgramPlan ?? this.trainingProgramPlan,
@@ -436,7 +425,6 @@ class StudentInformation {
       addressFrom: addressFrom ?? this.addressFrom,
       addressCity: addressCity ?? this.addressCity,
       addressDistrict: addressDistrict ?? this.addressDistrict,
-      addressSubDistrict: addressSubDistrict ?? this.addressSubDistrict,
       studentId: studentId ?? this.studentId,
     );
   }
@@ -450,9 +438,6 @@ class StudentInformation {
     result.addAll({'gender': gender});
     result.addAll({'ethnicity': ethnicity});
     result.addAll({'nationality': nationality});
-    result.addAll({'national_id_card': nationalIdCard});
-    result.addAll({'national_id_card_issue_date': nationalIdCardIssueDate});
-    result.addAll({'national_id_card_issue_place': nationalIdCardIssuePlace});
     result.addAll({'citizen_id_card': citizenIdCard});
     result.addAll({'citizen_id_card_issue_date': citizenIdCardIssueDate});
     result.addAll({'religion': religion});
@@ -460,20 +445,20 @@ class StudentInformation {
     result.addAll({'account_bank_name': accountBankName});
     result.addAll({'hi_id': hIId});
     result.addAll({'hi_expire_date': hIExpireDate});
+    result.addAll({'hi_free_issue': hIFreeIssue});
     result.addAll({'specialization': specialization});
     result.addAll({'school_class': schoolClass});
     result.addAll({'training_program_plan': trainingProgramPlan});
     result.addAll({'training_program_plan_2': trainingProgramPlan2});
     result.addAll({'school_email': schoolEmail});
     result.addAll({'personal_email': personalEmail});
-    result.addAll({'schoolEmailInitPass': schoolEmailInitPass});
+    result.addAll({'school_email_init_pass': schoolEmailInitPass});
     result.addAll({'facebook_url': facebookUrl});
     result.addAll({'phone_number': phoneNumber});
     result.addAll({'address': address});
     result.addAll({'address_from': addressFrom});
     result.addAll({'address_city': addressCity});
     result.addAll({'address_district': addressDistrict});
-    result.addAll({'address_sub_district': addressSubDistrict});
     result.addAll({'student_id': studentId});
 
     return result;
@@ -487,9 +472,6 @@ class StudentInformation {
       gender: map['gender'] ?? '',
       ethnicity: map['ethnicity'] ?? '',
       nationality: map['nationality'] ?? '',
-      nationalIdCard: map['national_id_card'] ?? '',
-      nationalIdCardIssueDate: map['national_id_card_issue_date'] ?? '',
-      nationalIdCardIssuePlace: map['national_id_card_issue_place'] ?? '',
       citizenIdCard: map['citizen_id_card'] ?? '',
       citizenIdCardIssueDate: map['citizen_id_card_issue_date'] ?? '',
       religion: map['religion'] ?? '',
@@ -497,20 +479,20 @@ class StudentInformation {
       accountBankName: map['account_bank_name'] ?? '',
       hIId: map['hi_id'] ?? '',
       hIExpireDate: map['hi_expire_date'] ?? '',
+      hIFreeIssue: bool.tryParse(map['hi_free_issue'] ?? '') ?? false,
       specialization: map['specialization'] ?? '',
       schoolClass: map['school_class'] ?? '',
       trainingProgramPlan: map['training_program_plan'] ?? '',
       trainingProgramPlan2: map['training_program_plan_2'] ?? '',
       schoolEmail: map['school_email'] ?? '',
       personalEmail: map['personal_email'] ?? '',
-      schoolEmailInitPass: map['schoolEmailInitPass'] ?? '',
+      schoolEmailInitPass: map['school_email_init_pass'] ?? '',
       facebookUrl: map['facebook_url'] ?? '',
       phoneNumber: map['phone_number'] ?? '',
       address: map['address'] ?? '',
       addressFrom: map['address_from'] ?? '',
       addressCity: map['address_city'] ?? '',
       addressDistrict: map['address_district'] ?? '',
-      addressSubDistrict: map['address_sub_district'] ?? '',
       studentId: map['student_id'] ?? '',
     );
   }
@@ -521,7 +503,7 @@ class StudentInformation {
 
   @override
   String toString() {
-    return 'AccountInformation(name: $name, dateOfBirth: $dateOfBirth, birthPlace: $birthPlace, gender: $gender, ethnicity: $ethnicity, nationality: $nationality, nationalIdCard: $nationalIdCard, nationalIdCardIssueDate: $nationalIdCardIssueDate, nationalIdCardIssuePlace: $nationalIdCardIssuePlace, citizenIdCard: $citizenIdCard, citizenIdCardIssueDate: $citizenIdCardIssueDate, religion: $religion, accountBankId: $accountBankId, accountBankName: $accountBankName, hIId: $hIId, hIExpireDate: $hIExpireDate, specialization: $specialization, schoolClass: $schoolClass, trainingProgramPlan: $trainingProgramPlan, trainingProgramPlan2: $trainingProgramPlan2, schoolEmail: $schoolEmail, personalEmail: $personalEmail, schoolEmailInitPass: $schoolEmailInitPass, facebookUrl: $facebookUrl, phoneNumber: $phoneNumber, address: $address, addressFrom: $addressFrom, addressCity: $addressCity, addressDistrict: $addressDistrict, addressSubDistrict: $addressSubDistrict, studentId: $studentId)';
+    return 'AccountInformation(name: $name, dateOfBirth: $dateOfBirth, birthPlace: $birthPlace, gender: $gender, ethnicity: $ethnicity, nationality: $nationality, citizenIdCard: $citizenIdCard, citizenIdCardIssueDate: $citizenIdCardIssueDate, religion: $religion, accountBankId: $accountBankId, accountBankName: $accountBankName, hIId: $hIId, hIExpireDate: $hIExpireDate, hIFreeIssue: $hIFreeIssue, specialization: $specialization, schoolClass: $schoolClass, trainingProgramPlan: $trainingProgramPlan, trainingProgramPlan2: $trainingProgramPlan2, schoolEmail: $schoolEmail, personalEmail: $personalEmail, schoolEmailInitPass: $schoolEmailInitPass, facebookUrl: $facebookUrl, phoneNumber: $phoneNumber, address: $address, addressFrom: $addressFrom, addressCity: $addressCity, addressDistrict: $addressDistrict, studentId: $studentId)';
   }
 
   @override
@@ -535,9 +517,6 @@ class StudentInformation {
         other.gender == gender &&
         other.ethnicity == ethnicity &&
         other.nationality == nationality &&
-        other.nationalIdCard == nationalIdCard &&
-        other.nationalIdCardIssueDate == nationalIdCardIssueDate &&
-        other.nationalIdCardIssuePlace == nationalIdCardIssuePlace &&
         other.citizenIdCard == citizenIdCard &&
         other.citizenIdCardIssueDate == citizenIdCardIssueDate &&
         other.religion == religion &&
@@ -558,7 +537,6 @@ class StudentInformation {
         other.addressFrom == addressFrom &&
         other.addressCity == addressCity &&
         other.addressDistrict == addressDistrict &&
-        other.addressSubDistrict == addressSubDistrict &&
         other.studentId == studentId;
   }
 
@@ -570,9 +548,6 @@ class StudentInformation {
         gender.hashCode ^
         ethnicity.hashCode ^
         nationality.hashCode ^
-        nationalIdCard.hashCode ^
-        nationalIdCardIssueDate.hashCode ^
-        nationalIdCardIssuePlace.hashCode ^
         citizenIdCard.hashCode ^
         citizenIdCardIssueDate.hashCode ^
         religion.hashCode ^
@@ -580,6 +555,7 @@ class StudentInformation {
         accountBankName.hashCode ^
         hIId.hashCode ^
         hIExpireDate.hashCode ^
+        hIFreeIssue.hashCode ^
         specialization.hashCode ^
         schoolClass.hashCode ^
         trainingProgramPlan.hashCode ^
@@ -593,7 +569,6 @@ class StudentInformation {
         addressFrom.hashCode ^
         addressCity.hashCode ^
         addressDistrict.hashCode ^
-        addressSubDistrict.hashCode ^
         studentId.hashCode;
   }
 }

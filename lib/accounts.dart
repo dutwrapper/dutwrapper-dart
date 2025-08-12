@@ -423,13 +423,6 @@ class Accounts {
           .getElementById("CN_cboQuocTich")
           .getSelectedOptionInComboBox()
           .getTextOrEmpty(),
-      nationalIdCard: webDoc.getElementById("CN_txtSoCMND").getValueOrEmpty(),
-      nationalIdCardIssueDate:
-          webDoc.getElementById("CN_txtNgayCap").getValueOrEmpty(),
-      nationalIdCardIssuePlace: webDoc
-          .getElementById("CN_cboNoiCap")
-          .getSelectedOptionInComboBox()
-          .getTextOrEmpty(),
       citizenIdCard: webDoc.getElementById("CN_txtSoCCCD").getValueOrEmpty(),
       citizenIdCardIssueDate:
           webDoc.getElementById("CN_txtNcCCCD").getValueOrEmpty(),
@@ -441,6 +434,7 @@ class Accounts {
       accountBankName: webDoc.getElementById("CN_txtNgHang").getValueOrEmpty(),
       hIId: webDoc.getElementById("CN_txtSoBHYT").getValueOrEmpty(),
       hIExpireDate: webDoc.getElementById("CN_txtHanBHYT").getValueOrEmpty(),
+      hIFreeIssue: webDoc.getElementById("CN_chkBHYT")?.isChecked() ?? false,
       specialization:
           webDoc.getElementById("MainContent_CN_txtNganh").getValueOrEmpty(),
       schoolClass: webDoc.getElementById("CN_txtLop").getValueOrEmpty(),
@@ -464,11 +458,7 @@ class Accounts {
           .getSelectedOptionInComboBox()
           .getTextOrEmpty(),
       addressDistrict: webDoc
-          .getElementById("CN_cboQuanCTru")
-          .getSelectedOptionInComboBox()
-          .getTextOrEmpty(),
-      addressSubDistrict: webDoc
-          .getElementById("CN_divPhuongCTru")
+          .getElementById("CN_cboPhuongCTru")
           .getSelectedOptionInComboBox()
           .getTextOrEmpty(),
       studentId: _parseStudentId(
