@@ -4,42 +4,40 @@ An unofficial wrapper for easier to use at [sv.dut.udn.vn - Da Nang University o
 > [!NOTE]
 > We will deprecate this project on 2025/09/11. Learn more on [project homepage](https://github.com/dutwrapper).
 
-# Version
+## Version
+- Release version [![https://github.com/dutwrapper/dutwrapper-dart](https://img.shields.io/github/v/release/dutwrapper/dutwrapper-dart)](https://github.com/dutwrapper/dutwrapper-dart/releases)
+- Pre-release version [![https://github.com/dutwrapper/dutwrapper-dart/tree/draft](https://img.shields.io/github/v/tag/dutwrapper/dutwrapper-dart?label=pre-release%20tag)](https://github.com/dutwrapper/dutwrapper-dart/tree/draft)
+- [Summary change log](CHANGELOG.md) / [Entire source code changes](https://github.com/dutwrapper/dutwrapper-dart/commits)
+- Badge provided by [shields.io](https://shields.io/)
 
-[![](https://img.shields.io/github/v/release/dutwrapper/dutwrapper-dart?label=release)](https://github.com/dutwrapper/dutwrapper-dart/releases)
-
-[![](https://img.shields.io/github/v/tag/dutwrapper/dutwrapper-dart?label=pre-release)](https://github.com/dutwrapper/dutwrapper-dart/releases)
-
-# Building requirements
+## Building requirements
+- You will need [Flutter 3.0 or later](https://flutter.dev/).
 - Follow [this document](https://docs.flutter.dev/) for building or using this library.
 
-# FAQ
+## FAQ
 
-## Where can I found library changelog?
-If you want to:
-- View major changes: [Click here](CHANGELOG.md).
-- View entire source code changes: [Click here](https://github.com/dutwrapper/dutwrapper-dotnet/commits).
-  - You will need to change branch if you want to view changelog for stable/draft version.
+### Branch in dutwrapper?
+- `main`/`stable`: Default branch and main release.
+- `draft`: This branch will used for update my progress and it is unstable. Use it at your own risk.
 
-## Branch in dutwrapper?
-- `stable`/`main`: Default branch and main release.
-- `draft`: Alpha branch. This branch is used for update my progress and it's very unstable. Use it at your own risk.
+### I received error about login while running AccountTest?
+- Make sure you have `dut_account` variable set with syntax `studentid|password`. This will ensure secure when testing project.
 
-## I received error about login while running AccountTest?
-- Did you mean this error: `dut_account environment variable not found. Please, add or modify this environment in format "username|password"`?
-- If so, you will need to add environment variable named `dut_account` with syntax `studentid|password`.
+### Where can I find Wiki for this library?
+- Unfortunately, I haven't done wiki yet.
+- Instead you can navigate source code to review them.
 
-## Wiki, or manual for how-to-use?
-- In a plan, please be patient.
+### Where can I find Wiki for this library?
+- Not now. Be patient.
 
-## I'm got issue with this library. Which place can I reproduce issue for you?
-- If you found a issue, you can report this via [issue tab](https://github.com/dutwrapper/dutwrapper-dotnet/issues) on this repository.
+### I'm got issue or a feature request about this library. How should I do?
+- Navigate to [issue tab](https://github.com/dutwrapper/dutwrapper-dart/issues) on this repository to create a issue or feature request.
 
-# Credit and license?
+## Credit and license?
 - License: [**MIT**](LICENSE)
 - DISCLAIMER:
-  - This project - dutwrapper - is not affiliated with [Da Nang University of Technology](http://sv.dut.udn.vn).
-  - DUT, Da Nang University of Technology, web materials and web contents are trademarks and copyrights of [Da Nang University of Technology](http://sv.dut.udn.vn) school.
+  - This project - dutwrapper - is not affiliated with [Da Nang University of Science and Technology school](http://dut.udn.vn).
+  - DUT, Da Nang University of Technology, web materials and web contents are trademarks and copyrights of [Da Nang University of Science and Technology school](http://dut.udn.vn).
 - Used third-party dependencies:
   - [html](https://pub.dev/packages/html): Licensed under the [license](https://pub.dev/packages/html/license)
   - [http](https://pub.dev/packages/http): Licensed under the [BSD-3-Clause license](https://pub.dev/packages/http/license)
