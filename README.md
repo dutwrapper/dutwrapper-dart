@@ -1,6 +1,8 @@
 # DutWrapper
-
 An unofficial wrapper for easier to use at [sv.dut.udn.vn - Da Nang University of Technology student page](http://sv.dut.udn.vn).
+
+> [!NOTE]
+> We will deprecate this project on 2025/09/11. Learn more on [project homepage](https://github.com/dutwrapper).
 
 # Version
 
