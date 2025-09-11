@@ -1,65 +1,172 @@
-
-// ignore_for_file: avoid_print
-// This is already test file, we need to all log here
-
-import 'dart:convert';
-
+import 'package:dutwrapper/enums.dart';
 import 'package:dutwrapper/news.dart';
+import 'package:dutwrapper/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('News Global', () async {
+  test('News - Global', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
     for (int i = 1; i <= 5; i++) {
-      print('======= GET GLOBAL NEWS - PAGE $i ========');
-      final response = await News.getNewsGlobal(page: i);
+      debugPrintSynchronously('======= GET GLOBAL NEWS - PAGE $i ========');
+      final response = await News.getNews(newsType: NewsType.global, page: i);
 
       if (response.isNotEmpty) {
-        print('Subject list: ${response.length}');
+        debugPrintSynchronously('News list: ${response.length}');
         for (var element in response) {
-          print('========================================');
-          print('Date: ${element.date}');
-          print('Title: ${element.title}');
-          print('Content: ${element.content}');
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
-            print('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
           }
         }
-
-        print(jsonEncode(response));
       } else {
-        print('Nothing in list!');
+        debugPrintSynchronously('Nothing in list!');
       }
     }
   });
 
-  test('News Subject', () async {
+  test('News - Subject', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
     for (int i = 1; i <= 5; i++) {
-      print('======= GET SUBJECT NEWS - PAGE $i =======');
-      final response = await News.getNewsSubject(page: i);
+      debugPrintSynchronously('======= GET SUBJECT NEWS - PAGE $i =======');
+      final response = (await News.getNews(newsType: NewsType.subject, page: i)).map((p) => p.convertToNewsSubject()).toList();
 
       if (response.isNotEmpty) {
-        print('Subject list: ${response.length}');
+        debugPrintSynchronously('Subject news list: ${response.length}');
         for (var element in response) {
-          print('========================================');
-          print('Date: ${element.date}');
-          print('Title: ${element.title}');
-          print('Content: ${element.content}');
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
           for (var link in element.resources) {
-            print('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
           }
           for (var affectedClassItem in element.affectedClasses) {
-            print("Class affected: ${affectedClassItem.subjectName} - ${affectedClassItem.codeList.map((p) => "${p.studentYearId}-${p.classId}").toList().join(", ")}");
+            debugPrintSynchronously(
+                "Class affected: ${affectedClassItem.subjectName} - ${affectedClassItem.codeList.map((p) => "${p.studentYearId}-${p.classId}").toList().join(", ")}");
           }
-          print('Lecturer Gender: ${element.lecturerGender.toString()}');
-          print('Lecturer Name: ${element.lecturerName}');
-          print('Lesson Status: ${element.lessonStatus.toString()}');
-          print('Affected Date: ${element.affectedDate}');
-          print('Affected Lesson: ${element.affectedLessons.toString()}');
-          print('Affected Room: ${element.affectedRoom}');
+          debugPrintSynchronously('Lecturer Gender: ${element.lecturerGender.toString()}');
+          debugPrintSynchronously('Lecturer Name: ${element.lecturerName}');
+          debugPrintSynchronously('Lesson Status: ${element.lessonStatus.toString()}');
+          debugPrintSynchronously('Affected Date: ${element.affectedDate}');
+          debugPrintSynchronously('Affected Lesson: ${element.affectedLessons.toString()}');
+          debugPrintSynchronously('Affected Room: ${element.affectedRoom}');
         }
-        print(jsonEncode(response));
       } else {
-        print('Nothing in list!');
+        debugPrintSynchronously('Nothing in list!');
+      }
+    }
+  });
+
+  test('News - Student Affairs', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
+    for (int i = 1; i <= 5; i++) {
+      debugPrintSynchronously('=== GET NEWS - STUDENT AFFAIRS - PAGE $i ===');
+      final response = await News.getNews(newsType: NewsType.studentAffairs, page: i);
+
+      if (response.isNotEmpty) {
+        debugPrintSynchronously('News list: ${response.length}');
+        for (var element in response) {
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
+          for (var link in element.resources) {
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+          }
+        }
+      } else {
+        debugPrintSynchronously('Nothing in list!');
+      }
+    }
+  });
+
+  test('News - Examination', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
+    for (int i = 1; i <= 5; i++) {
+      debugPrintSynchronously('===== GET NEWS - EXAMINATION - PAGE $i =====');
+      final response = await News.getNews(newsType: NewsType.examination, page: i);
+
+      if (response.isNotEmpty) {
+        debugPrintSynchronously('News list: ${response.length}');
+        for (var element in response) {
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
+          for (var link in element.resources) {
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+          }
+        }
+      } else {
+        debugPrintSynchronously('Nothing in list!');
+      }
+    }
+  });
+
+  test('News - Tuition fee', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
+    for (int i = 1; i <= 5; i++) {
+      debugPrintSynchronously('===== GET NEWS - TUITION FEE - PAGE $i =====');
+      final response = await News.getNews(newsType: NewsType.tuitionFee, page: i);
+
+      if (response.isNotEmpty) {
+        debugPrintSynchronously('News list: ${response.length}');
+        for (var element in response) {
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
+          for (var link in element.resources) {
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+          }
+        }
+      } else {
+        debugPrintSynchronously('Nothing in list!');
+      }
+    }
+  });
+
+  test('News - Statute and policy', () async {
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
+    for (int i = 1; i <= 5; i++) {
+      debugPrintSynchronously('== GET NEWS - STATUTE AND POLICY - PAGE $i =');
+      final response = await News.getNews(newsType: NewsType.statuteRegulation, page: i);
+
+      if (response.isNotEmpty) {
+        debugPrintSynchronously('News list: ${response.length}');
+        for (var element in response) {
+          debugPrintSynchronously('========================================');
+          debugPrintSynchronously('News type: ${element.newsType}');
+          debugPrintSynchronously('Date: ${element.datePublished}');
+          debugPrintSynchronously('Title: ${element.title}');
+          debugPrintSynchronously('Content: ${element.content}');
+          for (var link in element.resources) {
+            debugPrintSynchronously('Link: ${link.position} - ${link.type} - ${link.text} - ${link.content}');
+          }
+        }
+      } else {
+        debugPrintSynchronously('Nothing in list!');
       }
     }
   });

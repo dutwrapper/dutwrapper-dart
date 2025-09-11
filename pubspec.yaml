@@ -1,22 +1,23 @@
 name: dutwrapper
-description: A unofficial wrapper for quick access some features from DUT Student page - Da Nang University of Technology.
-version: 1.0.0
+description: An unofficial wrapper for easier to use at sv.dut.udn.vn - Da Nang University of Technology student page.
+version: 1.2.2
 homepage: https://github.com/dutwrapper/dutwrapper-dart
 
 environment:
-  sdk: '>=3.2.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  html: ^0.15.4
-  http: ^1.2.2
-  collection: ^1.18.0
+  html: ^0.15.6
+  http: ^1.5.0
+  collection: ^1.19.1
+  connectivity_plus: ^6.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

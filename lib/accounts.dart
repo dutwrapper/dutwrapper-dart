@@ -1,5 +1,3 @@
-library dutwrapper;
-
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
@@ -9,10 +7,11 @@ import 'package:html/parser.dart';
 import 'account_object.dart';
 import 'account_session_object.dart';
 import 'enums.dart';
-import 'http_element_parser.dart';
 import 'global_url.dart';
+import 'http_client_wrapper.dart';
+import 'http_element_parser.dart';
+import 'lib_exception.dart';
 import 'range_class.dart';
-import 'request_data_response.dart';
 import 'subject_code.dart';
 
 class Accounts {
@@ -45,20 +44,13 @@ class Accounts {
 
   static Future<AccountSession> generateNewSession({int timeout = 60}) async {
     // Request new session.
-    RequestDataResponse response = await RequestDataResponse.getAsync(
-      url: GlobalUrl.loginLink(),
+    final response = await HttpClientWrapper.get(
+      uri: Uri.parse(GlobalUrl.loginLink()),
     );
-    // If have exception -> Request is not successful. Just throw them.
-    if (response.ex != null) {
-      throw response.ex!;
-    }
-    // If status isn't returned with code in range 200-299, throw here.
-    if ((response.statusCode ?? 0) < 200 || (response.statusCode ?? 0) > 299) {
-      throw Exception('Request was returned with code ${response.statusCode}.');
-    }
+    response.ensureSuccessfulStatusCode();
 
     // Parse content in response to Document.
-    var docHtml = parse(response.webContent!);
+    final docHtml = parse(response.body);
     return AccountSession(
       sessionId: _getSessionIdFromHeader(response.setHeaders),
       viewState: docHtml.getElementById("__VIEWSTATE").getValue(),
@@ -78,8 +70,8 @@ class Accounts {
       'cookie': _sessionToCookieItem(session.sessionId!)
     };
 
-    final response = await RequestDataResponse.getAsync(
-      url: GlobalUrl.subjectScheduleLink(year: 22, semester: 1),
+    final response = await HttpClientWrapper.get(
+      uri: Uri.parse(GlobalUrl.subjectScheduleLink(year: 22, semester: 1)),
       headers: headers,
       timeout: timeout,
     );
@@ -117,8 +109,8 @@ class Accounts {
       '_ctl0:MainContent:QLTH_btnLogin': 'Đăng+nhập'
     };
 
-    await RequestDataResponse.postAsync(
-      url: GlobalUrl.loginLink(),
+    await HttpClientWrapper.post(
+      uri: Uri.parse(GlobalUrl.loginLink()),
       headers: headers,
       postData: postData,
       timeout: timeout,
@@ -136,8 +128,8 @@ class Accounts {
       'cookie': _sessionToCookieItem(session.sessionId!)
     };
 
-    await RequestDataResponse.getAsync(
-      url: GlobalUrl.logoutLink(),
+    await HttpClientWrapper.get(
+      uri: Uri.parse(GlobalUrl.logoutLink()),
       headers: headers,
       timeout: timeout,
     );
@@ -152,7 +144,10 @@ class Accounts {
     session.ensureValidSessionId();
 
     if (await Accounts.isLoggedIn(session: session) != LoginStatus.loggedIn) {
-      throw Exception('You\'re not logged in!');
+      throw DutWrapperException(
+        message: "You're not logged in! Please login first.",
+        reason: DutWrapperExceptionReason.notAuthorized,
+      );
     }
 
     // Header data
@@ -160,30 +155,23 @@ class Accounts {
       'cookie': _sessionToCookieItem(session.sessionId!)
     };
 
-    final response = await RequestDataResponse.getAsync(
-      url: GlobalUrl.subjectScheduleLink(year: year, semester: semester),
+    final response = await HttpClientWrapper.get(
+      uri: Uri.parse(
+          GlobalUrl.subjectScheduleLink(year: year, semester: semester)),
       headers: headers,
     ).timeout(Duration(seconds: timeout));
-
-    if (response.ex != null) {
-      throw response.ex!;
-    }
-
-    if ((response.statusCode ?? 0) < 200 || (response.statusCode ?? 0) > 299) {
-      throw Exception('Request was returned with code ${response.statusCode}.');
-    }
+    response.ensureSuccessfulStatusCode();
 
     // Check if response have content here.
     // If not, just return empty list.
-    if (response.webContent == null) {
+    if (response.body == null) {
       return [];
     }
 
     List<SubjectInformation> result = [];
 
     // Subject study
-    var docSchStudy =
-        parse(response.webContent!).getElementById('TTKB_GridInfo');
+    var docSchStudy = parse(response.body).getElementById('TTKB_GridInfo');
     if (docSchStudy != null) {
       var schRow = docSchStudy.getElementsByClassName('GridRow');
       if (schRow.isNotEmpty) {
@@ -254,7 +242,7 @@ class Accounts {
     }
 
     // Subject exam
-    var docSchExam = parse(response.webContent!).getElementById('TTKB_GridLT');
+    var docSchExam = parse(response.body).getElementById('TTKB_GridLT');
     if (docSchExam != null) {
       var schRow = docSchExam.getElementsByClassName('GridRow');
       if (schRow.isNotEmpty) {
@@ -273,7 +261,7 @@ class Accounts {
 
             if (schCell[5].text.isNotEmpty) {
               RegExp regex = RegExp(
-                  r"Ngày: ([0-9]{2}\/[0-9]{2}\/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)");
+                  r"Ngày: ([0-9]{2}/[0-9]{2}/[0-9]{4}), Phòng: (.*), Giờ: ([0-9]{1,2}h[0-9]{2}), Xuất: (.*)");
               if (regex.hasMatch(schCell[5].text)) {
                 var dateSplit =
                     regex.firstMatch(schCell[5].text)!.group(1)!.split("/");
@@ -318,7 +306,10 @@ class Accounts {
     session.ensureValidSessionId();
 
     if (await Accounts.isLoggedIn(session: session) != LoginStatus.loggedIn) {
-      throw Exception('You\'re not logged in!');
+      throw DutWrapperException(
+        message: "You're not logged in! Please login first.",
+        reason: DutWrapperExceptionReason.notAuthorized,
+      );
     }
 
     // Header data
@@ -326,36 +317,28 @@ class Accounts {
       'cookie': _sessionToCookieItem(session.sessionId!)
     };
 
-    final response = await RequestDataResponse.getAsync(
-      url: GlobalUrl.subjectFeeLink(year: year, semester: semester),
+    final response = await HttpClientWrapper.get(
+      uri: Uri.parse(GlobalUrl.subjectFeeLink(year: year, semester: semester)),
       headers: headers,
     ).timeout(Duration(seconds: timeout));
-
-    if (response.ex != null) {
-      throw response.ex!;
-    }
-
-    if ((response.statusCode ?? 0) < 200 || (response.statusCode ?? 0) > 299) {
-      throw Exception('Request was returned with code ${response.statusCode}.');
-    }
+    response.ensureSuccessfulStatusCode();
 
     // Check if response have content here.
     // If not, just return empty list.
-    if (response.webContent == null) {
+    if (response.body == null) {
       return [];
     }
 
     List<SubjectFee> result = [];
 
     // Main processing
-    var docSchFee =
-        parse(response.webContent!).getElementById("THocPhi_GridInfo");
+    var docSchFee = parse(response.body).getElementById("THocPhi_GridInfo");
     if (docSchFee != null) {
       var schRow = docSchFee.getElementsByClassName("GridRow");
       if (schRow.isNotEmpty) {
         for (var row in schRow) {
           var schCell = row.getElementsByClassName('GridCell');
-          if (schCell.length < 10) {
+          if (schCell.length < 9) {
             continue;
           }
 
@@ -365,8 +348,7 @@ class Accounts {
             credit: int.tryParse(schCell[3].text) ?? 0,
             isHighQuality: schCell[4].isGridChecked(),
             price: double.tryParse(schCell[5].text.replaceAll(",", "")) ?? 0,
-            isDebt: schCell[6].isGridChecked(),
-            isReStudy: schCell[7].isGridChecked(),
+            isReStudy: schCell[6].isGridChecked(),
             confirmedPaymentAt: schCell[8].text,
           );
 
@@ -396,7 +378,10 @@ class Accounts {
     session.ensureValidSessionId();
 
     if (await Accounts.isLoggedIn(session: session) != LoginStatus.loggedIn) {
-      throw Exception('You\'re not logged in!');
+      throw DutWrapperException(
+        message: "You're not logged in! Please login first.",
+        reason: DutWrapperExceptionReason.notAuthorized,
+      );
     }
 
     // Header data
@@ -404,28 +389,24 @@ class Accounts {
       'cookie': _sessionToCookieItem(session.sessionId!)
     };
 
-    final response = await RequestDataResponse.getAsync(
-      url: GlobalUrl.accountInformationLink(),
+    final response = await HttpClientWrapper.get(
+      uri: Uri.parse(GlobalUrl.accountInformationLink()),
       headers: headers,
     ).timeout(Duration(seconds: timeout));
+    response.ensureSuccessfulStatusCode();
 
-    if (response.ex != null) {
-      throw response.ex!;
-    }
-
-    if ((response.statusCode ?? 0) < 200 || (response.statusCode ?? 0) > 299) {
-      throw Exception('Request was returned with code ${response.statusCode}.');
-    }
-
-    // Check if response have content here.
-    // If not, just throw errors.
-    if (response.webContent == null) {
-      throw Exception(
-          'We can\'t receive any information about this request! Please, try again.');
+    // Check if response have content here. If not, just throw errors.
+    if (response.body == null) {
+      throw DutWrapperException(
+        message: "We can't receive any information about this request! "
+            "Please, try again later.\n"
+            "You might need to check if you're logged in first.",
+        reason: DutWrapperExceptionReason.dataNotFoundException,
+      );
     }
 
     // Main processing
-    var webDoc = parse(response.webContent!);
+    var webDoc = parse(response.body);
     return StudentInformation(
       name: webDoc.getElementById("CN_txtHoTen").getValueOrEmpty(),
       dateOfBirth: webDoc.getElementById("CN_txtNgaySinh").getValueOrEmpty(),
@@ -442,13 +423,6 @@ class Accounts {
           .getElementById("CN_cboQuocTich")
           .getSelectedOptionInComboBox()
           .getTextOrEmpty(),
-      nationalIdCard: webDoc.getElementById("CN_txtSoCMND").getValueOrEmpty(),
-      nationalIdCardIssueDate:
-          webDoc.getElementById("CN_txtNgayCap").getValueOrEmpty(),
-      nationalIdCardIssuePlace: webDoc
-          .getElementById("CN_cboNoiCap")
-          .getSelectedOptionInComboBox()
-          .getTextOrEmpty(),
       citizenIdCard: webDoc.getElementById("CN_txtSoCCCD").getValueOrEmpty(),
       citizenIdCardIssueDate:
           webDoc.getElementById("CN_txtNcCCCD").getValueOrEmpty(),
@@ -460,6 +434,7 @@ class Accounts {
       accountBankName: webDoc.getElementById("CN_txtNgHang").getValueOrEmpty(),
       hIId: webDoc.getElementById("CN_txtSoBHYT").getValueOrEmpty(),
       hIExpireDate: webDoc.getElementById("CN_txtHanBHYT").getValueOrEmpty(),
+      hIFreeIssue: webDoc.getElementById("CN_chkBHYT")?.isChecked() ?? false,
       specialization:
           webDoc.getElementById("MainContent_CN_txtNganh").getValueOrEmpty(),
       schoolClass: webDoc.getElementById("CN_txtLop").getValueOrEmpty(),
@@ -483,11 +458,7 @@ class Accounts {
           .getSelectedOptionInComboBox()
           .getTextOrEmpty(),
       addressDistrict: webDoc
-          .getElementById("CN_cboQuanCTru")
-          .getSelectedOptionInComboBox()
-          .getTextOrEmpty(),
-      addressSubDistrict: webDoc
-          .getElementById("CN_divPhuongCTru")
+          .getElementById("CN_cboPhuongCTru")
           .getSelectedOptionInComboBox()
           .getTextOrEmpty(),
       studentId: _parseStudentId(
@@ -502,7 +473,10 @@ class Accounts {
     session.ensureValidSessionId();
 
     if (await Accounts.isLoggedIn(session: session) != LoginStatus.loggedIn) {
-      throw Exception('You\'re not logged in!');
+      throw DutWrapperException(
+        message: "You're not logged in! Please login first.",
+        reason: DutWrapperExceptionReason.notAuthorized,
+      );
     }
 
     // Header data
@@ -510,33 +484,33 @@ class Accounts {
       'cookie': _sessionToCookieItem(session.sessionId!)
     };
 
-    final response = await RequestDataResponse.getAsync(
-      url: GlobalUrl.trainingStatusLink(),
+    final response = await HttpClientWrapper.get(
+      uri: Uri.parse(GlobalUrl.trainingStatusLink()),
       headers: headers,
     ).timeout(Duration(seconds: timeout));
-
-    if (response.ex != null) {
-      throw response.ex!;
-    }
-
-    if ((response.statusCode ?? 0) < 200 || (response.statusCode ?? 0) > 299) {
-      throw Exception('Request was returned with code ${response.statusCode}.');
-    }
+    response.ensureSuccessfulStatusCode();
 
     // Check if response have content here.
     // If not, just throw errors.
-    if (response.webContent == null) {
-      throw Exception(
-          'We can\'t receive any information about this request! Please, try again.');
+    if (response.body == null) {
+      throw DutWrapperException(
+        message: "We can't receive any information about this request! "
+            "Please, try again later.\n"
+            "You might need to check if you're logged in first.",
+        reason: DutWrapperExceptionReason.dataNotFoundException,
+      );
     }
 
     // Main processing
-    var webDoc = parse(response.webContent!);
+    final webDoc = parse(response.body);
+    final trainingSummary = _parseTrainingSummary(webDoc: webDoc);
+    final graduateStatus = _parseGraduateStatus(webDoc: webDoc);
+    final subjectResultList = _parseSubjectResultList(webDoc: webDoc);
 
     return TrainingResult(
-      trainingSummary: _parseTrainingSummary(webDoc: webDoc),
-      graduateStatus: _parseGraduateStatus(webDoc: webDoc),
-      subjectResultList: _parseSubjectResultList(webDoc: webDoc),
+      trainingSummary: trainingSummary,
+      graduateStatus: graduateStatus,
+      subjectResultList: subjectResultList,
     );
   }
 
@@ -549,10 +523,13 @@ class Accounts {
       avgTrainingScore4: 0,
       avgSocial: 0,
     );
-    var webDocTrainSum =
+    final webDocTrainSum =
         webDoc.getElementById("KQRLGridTH")?.getElementsByClassName("GridRow");
     if (webDocTrainSum == null) {
-      throw Exception("No data for training summary");
+      throw DutWrapperException(
+        message: "No data for training summary.",
+        reason: DutWrapperExceptionReason.dataNotFoundException,
+      );
     }
     for (var gridRow in webDocTrainSum) {
       var gridCell = gridRow.getElementsByClassName("GridCell");
@@ -588,7 +565,10 @@ class Accounts {
     var webDocGraduateStat =
         webDoc.getElementById("KQRLdvCc").convertToDocument();
     if (webDocGraduateStat == null) {
-      throw Exception("No data for gradudate status");
+      throw DutWrapperException(
+        message: "No data for gradudate status.",
+        reason: DutWrapperExceptionReason.dataNotFoundException,
+      );
     }
     GraduateStatus gradStat = GraduateStatus(
       hasSigGDTC: webDocGraduateStat.getElementById("KQRL_chkGDTC").isChecked(),
@@ -627,7 +607,10 @@ class Accounts {
         ?.getElementById("KQRLGridKQHT")
         ?.getElementsByClassName("GridRow");
     if (webDocSubjectResult == null) {
-      throw Exception("No data for subject result list");
+      throw DutWrapperException(
+        message: "No data for subject result list.",
+        reason: DutWrapperExceptionReason.dataNotFoundException,
+      );
     }
     List<SubjectResult> subjectResultList = [];
     for (var row in webDocSubjectResult.reversed) {

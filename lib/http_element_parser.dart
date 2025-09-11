@@ -14,8 +14,8 @@ extension ElementParser on Element? {
     return (this == null)
         ? null
         : (this!.text.isEmpty)
-        ? null
-        : this!.text;
+            ? null
+            : this!.text;
   }
 
   String getTextOrEmpty() {
@@ -24,6 +24,19 @@ extension ElementParser on Element? {
 
   bool isTextEmpty() {
     return getTextOrEmpty().isEmpty;
+  }
+
+  List<Element> getOptionListInComboBox() {
+    if (this == null) {
+      return [];
+    }
+
+    var optionList = this!.getElementsByTagName('option');
+    if (optionList.isEmpty) {
+      return [];
+    }
+
+    return optionList;
   }
 
   Element? getSelectedOptionInComboBox() {
@@ -36,8 +49,7 @@ extension ElementParser on Element? {
       return null;
     }
 
-    return optionList.firstWhereOrNull(
-            (element) => element.attributes.containsKey('selected'));
+    return optionList.firstWhereOrNull((element) => element.attributes.containsKey('selected'));
   }
 
   bool isGridChecked() {

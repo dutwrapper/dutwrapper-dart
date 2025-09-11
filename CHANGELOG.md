@@ -1,6 +1,39 @@
 # DUTWRAPPER CHANGE LOG
 
-This file will list all version log for modified, added or removed functions of dutwrapper (Dart language).
+This will list all version log for modified, added or removed functions of dutwrapper (flutter/dart).
+
+## 1.2.2
+- Updated `Student information` because of school page changed.
+- Updated dependencies to latest version.
+
+## 1.2.1
+- Fixed an issue cause can't load `Subject fee` because of incorrect element length.
+
+## 1.2.0
+- Merge all news to `NewsCore`. Merge all fetching news to `getNews()`.
+- Fixed an issue cause missing `affectedLessons` when parse to `NewsSubject`.
+
+## 1.1.0
+- Add an option in news fetching:
+  - Statute and policy
+- Fixed an issue in `Utils.getCurrentSchoolYear()` (because of page element changed).
+- Moved all links to `https` (because page is replaced from `http` to `https`).
+
+## 1.0.3
+- Add 3 options in news fetching:
+  - Student affairs news
+  - Examination news
+  - Tuition fee news
+- Add `toMarkdown()` in global news for quick generate markdown version.
+- Updated dependencies to latest version.
+
+## 1.0.2
+- New DUT Wrapper exception.
+- `ensureServerWorking()` will check if you have connected to internet and sv.dut.udn.vn is online.
+
+## 1.0.1
+- Add option for search query in `News` class.
+- Optimize codes.
 
 ## 1.0.0
 - Functions in `Account` class have no more `RequestResult` returns. This class has been removed.

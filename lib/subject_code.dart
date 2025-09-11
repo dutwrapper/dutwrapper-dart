@@ -93,8 +93,8 @@ class SubjectCode {
 
   factory SubjectCode.fromMap(Map<String, dynamic> map) {
     return SubjectCode.from(
-      subjectId: map['subject_id']?.toInt() ?? 0,
-      schoolYearId: map['school_year_id']?.toInt() ?? 0,
+      subjectId: map['subject_id'] ?? '',
+      schoolYearId: map['school_year_id'] ?? '',
       studentYearId: map['student_year_id'] ?? '',
       classId: map['class_id'] ?? '',
     );

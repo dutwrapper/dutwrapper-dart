@@ -1,13 +1,12 @@
-// ignore_for_file: non_constant_identifier_names
-// ignore_for_file: avoid_print
-// This is already test file, we need to all log here
-
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:dutwrapper/account_session_object.dart';
 import 'package:dutwrapper/accounts.dart';
 import 'package:dutwrapper/enums.dart';
+import 'package:dutwrapper/lib_exception.dart';
+import 'package:dutwrapper/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -21,43 +20,57 @@ void main() {
 
     var env1 = Platform.environment['dut_account'];
     if (env1 == null) {
-      throw Exception(
-          'No dut_account varaiable found!\nMake sure you\'re added them in environment variable!');
+      throw DutWrapperException(
+        message: "No dut_account varaiable found!\n"
+            "Make sure you're added them in environment variable!",
+        reason: DutWrapperExceptionReason.parameterException,
+      );
     }
     if (env1.split('|').length != 2) {
-      throw Exception(
-          'Invaild dut_account varaiable!\nMake sure you\'re formatted correctly following (username|password)!');
+      throw DutWrapperException(
+        message: "Invaild dut_account varaiable!\n"
+            "Make sure you're formatted correctly "
+            "following (username|password)!",
+        reason: DutWrapperExceptionReason.parameterException,
+      );
     }
 
+    // Checking server is available before starting test.
+    final checkResponse = await Utils.checkPageStatus();
+    checkResponse.ensureSuccessfulStatusCode();
+
     // Get session
-    print('\nGetting new session...');
+    debugPrintSynchronously('\nGetting new session...');
     AccountSession session = await Accounts.generateNewSession();
-    print(session.toJson());
+    debugPrintSynchronously(session.toJson());
 
     // Check if logged in before
-    print('\nChecking if this session has been logged in before...');
-    print(await Accounts.isLoggedIn(session: session));
+    debugPrintSynchronously('\nChecking if this session has been logged in before...');
+    debugPrintSynchronously((await Accounts.isLoggedIn(session: session)).toString());
 
     // Login and check again
-    print('\nLogging in...');
-    Accounts.login(
+    debugPrintSynchronously('\nLogging in...');
+    await Accounts.login(
       session: session,
       authInfo: AuthInfo(
         username: env1.split('|')[0],
         password: env1.split('|')[1],
       ),
     );
-    print('Done! Now checking if session has been logged in...');
+    debugPrintSynchronously('Done! Now checking if session has been logged in...');
     var loggedIn1 = await Accounts.isLoggedIn(session: session);
-    print(loggedIn1);
+    debugPrintSynchronously(loggedIn1.toString());
     if (loggedIn1 != LoginStatus.loggedIn) {
-      throw Exception('Sorry, your login information is incorrect. This test cannot continue...');
+      throw DutWrapperException(
+        message: 'Sorry, your login information is incorrect. This test cannot continue...',
+        reason: DutWrapperExceptionReason.notAuthorized,
+      );
     }
 
     // Fetch subject information
-    print('\nFetching subject information...');
+    debugPrintSynchronously('\nFetching subject information...');
     if (FETCH_SUBJECT_INFORMATION) {
-      print(jsonEncode(await Accounts.fetchSubjectInformation(
+      debugPrintSynchronously(jsonEncode(await Accounts.fetchSubjectInformation(
         session: session,
         year: SUBJECT_SCHEDULE_YEAR,
         semester: SUBJECT_SCHEDULE_SEMESTER,
@@ -65,9 +78,9 @@ void main() {
     }
 
     // Fetch subject fee
-    print('\nFetching subject fee...');
+    debugPrintSynchronously('\nFetching subject fee...');
     if (FETCH_SUBJECT_FEE) {
-      print(jsonEncode(await Accounts.fetchSubjectFee(
+      debugPrintSynchronously(jsonEncode(await Accounts.fetchSubjectFee(
         session: session,
         year: SUBJECT_SCHEDULE_YEAR,
         semester: SUBJECT_SCHEDULE_SEMESTER,
@@ -75,24 +88,23 @@ void main() {
     }
 
     // Fetch student information
-    print('\nFetching student information...');
+    debugPrintSynchronously('\nFetching student information...');
     if (FETCH_STUDENT_INFORMATION) {
-      print(
-          (await Accounts.fetchStudentInformation(session: session)).toJson());
+      debugPrintSynchronously((await Accounts.fetchStudentInformation(session: session)).toJson());
     }
 
     // Fetch training result
-    print('\nFetching training result...');
+    debugPrintSynchronously('\nFetching training result...');
     if (FETCH_TRAINING_RESULT) {
-      print((await Accounts.fetchTrainingResult(session: session)).toJson());
+      debugPrintSynchronously((await Accounts.fetchTrainingResult(session: session)).toJson());
     }
 
     // Logout and ensure logged out
-    print('\nLogging out...');
+    debugPrintSynchronously('\nLogging out...');
     await Accounts.logout(session: session);
-    print('Done! Now checking if session has been logged out...');
-    print(await Accounts.isLoggedIn(session: session));
+    debugPrintSynchronously('Done! Now checking if session has been logged out...');
+    debugPrintSynchronously((await Accounts.isLoggedIn(session: session)).toString());
 
-    print('\nThis test has been finished!\n');
+    debugPrintSynchronously('\nThis test has been finished!\n');
   });
 }

@@ -7,7 +7,21 @@ class GlobalUrl {
     NewsSearchMethod searchType = NewsSearchMethod.byTitle,
     String? query,
   }) {
-    return "${baseLink()}/WebAjax/evLopHP_Load.aspx?E=${(newsType == NewsType.global) ? 'CTRTBSV' : 'CTRTBGV'}&PAGETB=$page&COL=${searchType == NewsSearchMethod.byTitle ? "TieuDe" : "NoiDung"}&NAME=${query ?? ""}&TAB=0";
+    // Parameter - E
+    String e = switch (newsType) {
+      NewsType.subject => "CTRTBGV",
+      NewsType.unknown => "",
+      _ => "CTRTBSV",
+    };
+
+    // Parameter - COL
+    String col = searchType.toString();
+
+    // Parameter - TAB
+    String tab = newsType.value.toString();
+
+    return "${baseLink()}/WebAjax/evLopHP_Load.aspx?"
+        "E=${e}&PAGETB=${page}&COL=${col}&NAME=${query ?? ""}&TAB=${tab}";
   }
 
   static String subjectScheduleLink({
@@ -32,7 +46,7 @@ class GlobalUrl {
     return "${baseLink()}/WebAjax/evLopHP_Load.aspx?E=THPhiLoad&Code=$code";
   }
 
-  static String baseLink() => "http://sv.dut.udn.vn";
+  static String baseLink() => "https://sv.dut.udn.vn";
 
   static String loginLink() => "${baseLink()}/PageDangNhap.aspx";
 
@@ -42,5 +56,5 @@ class GlobalUrl {
 
   static String trainingStatusLink() => "${baseLink()}/PageKQRL.aspx";
 
-  static String dutSchedulePage() => "http://dut.udn.vn/Lichtuan";
+  static String dutSchedulePage() => "https://lichtuan.dut.udn.vn/home";
 }

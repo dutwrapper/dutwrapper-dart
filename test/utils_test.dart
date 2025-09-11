@@ -1,31 +1,38 @@
-// ignore_for_file: avoid_print
-// This is already test file, we need to all log here
-
 import 'package:dutwrapper/custom_clock.dart';
 import 'package:dutwrapper/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('Get current school year', () async {
-    print('Get current school year');
-    print('=====================================');
+    debugPrintSynchronously('Get current school year');
+    debugPrintSynchronously('=====================================');
     var value = await Utils.getCurrentSchoolYear();
     if (value != null) {
-      print('School year: ${value.schoolYear}');
-      print('School year value: ${value.schoolYearVal}');
-      print('Week: ${value.week}');
+      debugPrintSynchronously('School year: ${value.schoolYear}');
+      debugPrintSynchronously('School year value: ${value.schoolYearVal}');
+      debugPrintSynchronously('Week: ${value.week}');
+      debugPrintSynchronously('First week date: ${DateTime.fromMillisecondsSinceEpoch(value.firstWeekDate, isUtc: true).toString()}');
     } else {
-      print('Fetch failed!');
+      debugPrintSynchronously('Fetch failed!');
     }
-    print('');
+    debugPrintSynchronously('');
   });
 
   test('Get current dut lesson', () {
-    print('Get current dut lesson');
-    print('=====================================');
+    debugPrintSynchronously('Get current dut lesson');
+    debugPrintSynchronously('=====================================');
     var value2 = CustomClock.current();
-    print('Current time: ${value2.toString()}');
-    print('Current lesson: ${value2.toDUTLesson()}');
-    print('');
+    debugPrintSynchronously('Current time: ${value2.toString()}');
+    debugPrintSynchronously('Current lesson: ${value2.toDUTLesson()}');
+    debugPrintSynchronously('');
+  });
+
+  test('Check if have internet', () async {
+    debugPrintSynchronously('Checking you have internet...');
+    await Utils.ensureNetworkHaveInternet();
+    debugPrintSynchronously('Checking dut server is online...');
+    await Utils.ensureNetworkDutSvOnline();
+    debugPrintSynchronously('If you reached here, you have connected to sv.dut.udn.vn.');
   });
 }

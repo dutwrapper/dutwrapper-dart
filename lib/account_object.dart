@@ -58,20 +58,15 @@ class SubjectInformation {
       credit: map['credit']?.toInt() ?? 0,
       isHighQuality: map['is_high_quality'] ?? false,
       lecturerName: map['lecturer'] ?? '',
-      subjectStudy: map['schedule_study'] != null
-          ? ScheduleStudy.fromMap(map['schedule_study'])
-          : ScheduleStudy.createDefault(),
-      subjectExam: map['schedule_exam'] != null
-          ? ScheduleExam.fromMap(map['schedule_exam'])
-          : ScheduleExam.createDefault(),
+      subjectStudy: map['schedule_study'] != null ? ScheduleStudy.fromMap(map['schedule_study']) : ScheduleStudy.createDefault(),
+      subjectExam: map['schedule_exam'] != null ? ScheduleExam.fromMap(map['schedule_exam']) : ScheduleExam.createDefault(),
       pointFormula: map['point_formula'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SubjectInformation.fromJson(String source) =>
-      SubjectInformation.fromMap(json.decode(source));
+  factory SubjectInformation.fromJson(String source) => SubjectInformation.fromMap(json.decode(source));
 }
 
 class SubjectSchedule {
@@ -104,7 +99,7 @@ class SubjectSchedule {
     final result = <String, dynamic>{};
 
     result.addAll({'day_of_week': dayOfWeek});
-    result.addAll({'lesson_affected': lesson});
+    result.addAll({'lesson_affected': lesson.toMap()});
     result.addAll({'room': room});
 
     return result;
@@ -112,29 +107,24 @@ class SubjectSchedule {
 
   factory SubjectSchedule.fromMap(Map<String, dynamic> map) {
     return SubjectSchedule.from(
-      dayOfWeek: map['day_of_week']?.toInt() ?? 0,
-      lesson: map['lesson_affected'] ?? RangeInt(start: 0, end: 0),
+      dayOfWeek: map['day_of_week']?.toInt() ?? 1,
+      lesson: RangeInt.fromMap(map['lesson_affected'] ?? {}),
       room: map['room'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SubjectSchedule.fromJson(String source) =>
-      SubjectSchedule.fromMap(json.decode(source));
+  factory SubjectSchedule.fromJson(String source) => SubjectSchedule.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'SubjectScheduleStudy(dayOfWeek: $dayOfWeek, lesson: $lesson, room: $room)';
+  String toString() => 'SubjectScheduleStudy(dayOfWeek: $dayOfWeek, lesson: $lesson, room: $room)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is SubjectSchedule &&
-        other.dayOfWeek == dayOfWeek &&
-        other.lesson == lesson &&
-        other.room == room;
+    return other is SubjectSchedule && other.dayOfWeek == dayOfWeek && other.lesson == lesson && other.room == room;
   }
 
   @override
@@ -157,8 +147,7 @@ class ScheduleStudy {
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
-    result.addAll(
-        {'schedule_list': subjectStudyList.map((x) => x.toMap()).toList()});
+    result.addAll({'schedule_list': subjectStudyList.map((x) => x.toMap()).toList()});
     result.addAll({'week_affected': weekList.map((x) => x.toMap()).toList()});
 
     return result;
@@ -166,17 +155,14 @@ class ScheduleStudy {
 
   factory ScheduleStudy.fromMap(Map<String, dynamic> map) {
     return ScheduleStudy(
-      subjectStudyList: List<SubjectSchedule>.from(
-          map['schedule_list']?.map((x) => SubjectSchedule.fromMap(x))),
-      weekList:
-      List<RangeInt>.from(map['week_affected']?.map((x) => RangeInt.fromMap(x))),
+      subjectStudyList: List<SubjectSchedule>.from(map['schedule_list']?.map((x) => SubjectSchedule.fromMap(x))),
+      weekList: List<RangeInt>.from(map['week_affected']?.map((x) => RangeInt.fromMap(x))),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ScheduleStudy.fromJson(String source) =>
-      ScheduleStudy.fromMap(json.decode(source));
+  factory ScheduleStudy.fromJson(String source) => ScheduleStudy.fromMap(json.decode(source));
 }
 
 class ScheduleExam {
@@ -220,8 +206,7 @@ class ScheduleExam {
 
   String toJson() => json.encode(toMap());
 
-  factory ScheduleExam.fromJson(String source) =>
-      ScheduleExam.fromMap(json.decode(source));
+  factory ScheduleExam.fromJson(String source) => ScheduleExam.fromMap(json.decode(source));
 }
 
 class SubjectFee {
@@ -230,7 +215,6 @@ class SubjectFee {
   int credit = 0;
   bool isHighQuality = false;
   double price = 0;
-  bool isDebt = false;
   bool isReStudy = false;
   String? confirmedPaymentAt;
 
@@ -242,7 +226,6 @@ class SubjectFee {
     required this.credit,
     required this.isHighQuality,
     required this.price,
-    required this.isDebt,
     required this.isReStudy,
     this.confirmedPaymentAt,
   });
@@ -253,7 +236,6 @@ class SubjectFee {
     int? credit,
     bool? isHighQuality,
     double? price,
-    bool? isDebt,
     bool? isReStudy,
     String? confirmedPaymentAt,
   }) {
@@ -263,7 +245,6 @@ class SubjectFee {
       credit: credit ?? this.credit,
       isHighQuality: isHighQuality ?? this.isHighQuality,
       price: price ?? this.price,
-      isDebt: isDebt ?? this.isDebt,
       isReStudy: isReStudy ?? this.isReStudy,
       confirmedPaymentAt: confirmedPaymentAt ?? this.confirmedPaymentAt,
     );
@@ -277,7 +258,6 @@ class SubjectFee {
     result.addAll({'credit': credit});
     result.addAll({'is_high_quality': isHighQuality});
     result.addAll({'price': price});
-    result.addAll({'is_debt': isDebt});
     result.addAll({'is_restudy': isReStudy});
     if (confirmedPaymentAt != null) {
       result.addAll({'verified_payment_at': confirmedPaymentAt});
@@ -293,7 +273,6 @@ class SubjectFee {
       credit: map['credit']?.toInt() ?? 0,
       isHighQuality: map['is_high_quality'] ?? false,
       price: map['price']?.toDouble() ?? 0.0,
-      isDebt: map['is_debt'] ?? false,
       isReStudy: map['is_restudy'] ?? false,
       confirmedPaymentAt: map['verified_payment_at'],
     );
@@ -301,12 +280,11 @@ class SubjectFee {
 
   String toJson() => json.encode(toMap());
 
-  factory SubjectFee.fromJson(String source) =>
-      SubjectFee.fromMap(json.decode(source));
+  factory SubjectFee.fromJson(String source) => SubjectFee.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'SubjectFee(name: $name, credit: $credit, isHighQuality: $isHighQuality, price: $price, isDebt: $isDebt, isReStudy: $isReStudy, confirmedPaymentAt: $confirmedPaymentAt)';
+    return 'SubjectFee(name: $name, credit: $credit, isHighQuality: $isHighQuality, price: $price, isReStudy: $isReStudy, confirmedPaymentAt: $confirmedPaymentAt)';
   }
 
   @override
@@ -318,20 +296,13 @@ class SubjectFee {
         other.credit == credit &&
         other.isHighQuality == isHighQuality &&
         other.price == price &&
-        other.isDebt == isDebt &&
         other.isReStudy == isReStudy &&
         other.confirmedPaymentAt == confirmedPaymentAt;
   }
 
   @override
   int get hashCode {
-    return name.hashCode ^
-    credit.hashCode ^
-    isHighQuality.hashCode ^
-    price.hashCode ^
-    isDebt.hashCode ^
-    isReStudy.hashCode ^
-    confirmedPaymentAt.hashCode;
+    return name.hashCode ^ credit.hashCode ^ isHighQuality.hashCode ^ price.hashCode ^ isReStudy.hashCode ^ confirmedPaymentAt.hashCode;
   }
 }
 
@@ -342,9 +313,6 @@ class StudentInformation {
   String gender;
   String ethnicity;
   String nationality;
-  String nationalIdCard;
-  String nationalIdCardIssueDate;
-  String nationalIdCardIssuePlace;
   String citizenIdCard;
   String citizenIdCardIssueDate;
   String religion;
@@ -352,6 +320,7 @@ class StudentInformation {
   String accountBankName;
   String hIId;
   String hIExpireDate;
+  bool hIFreeIssue;
   String specialization;
   String schoolClass;
   String trainingProgramPlan;
@@ -365,7 +334,6 @@ class StudentInformation {
   String addressFrom;
   String addressCity;
   String addressDistrict;
-  String addressSubDistrict;
   String studentId;
 
   StudentInformation({
@@ -375,9 +343,6 @@ class StudentInformation {
     required this.gender,
     required this.ethnicity,
     required this.nationality,
-    required this.nationalIdCard,
-    required this.nationalIdCardIssueDate,
-    required this.nationalIdCardIssuePlace,
     required this.citizenIdCard,
     required this.citizenIdCardIssueDate,
     required this.religion,
@@ -385,6 +350,7 @@ class StudentInformation {
     required this.accountBankName,
     required this.hIId,
     required this.hIExpireDate,
+    required this.hIFreeIssue,
     required this.specialization,
     required this.schoolClass,
     required this.trainingProgramPlan,
@@ -398,7 +364,6 @@ class StudentInformation {
     required this.addressFrom,
     required this.addressCity,
     required this.addressDistrict,
-    required this.addressSubDistrict,
     required this.studentId,
   });
 
@@ -409,9 +374,6 @@ class StudentInformation {
     String? gender,
     String? ethnicity,
     String? nationality,
-    String? nationalIdCard,
-    String? nationalIdCardIssueDate,
-    String? nationalIdCardIssuePlace,
     String? citizenIdCard,
     String? citizenIdCardIssueDate,
     String? religion,
@@ -419,6 +381,7 @@ class StudentInformation {
     String? accountBankName,
     String? hIId,
     String? hIExpireDate,
+    bool? hIFreeIssue,
     String? specialization,
     String? schoolClass,
     String? trainingProgramPlan,
@@ -432,7 +395,6 @@ class StudentInformation {
     String? addressFrom,
     String? addressCity,
     String? addressDistrict,
-    String? addressSubDistrict,
     String? studentId,
   }) {
     return StudentInformation(
@@ -442,19 +404,14 @@ class StudentInformation {
       gender: gender ?? this.gender,
       ethnicity: ethnicity ?? this.ethnicity,
       nationality: nationality ?? this.nationality,
-      nationalIdCard: nationalIdCard ?? this.nationalIdCard,
-      nationalIdCardIssueDate:
-      nationalIdCardIssueDate ?? this.nationalIdCardIssueDate,
-      nationalIdCardIssuePlace:
-      nationalIdCardIssuePlace ?? this.nationalIdCardIssuePlace,
       citizenIdCard: citizenIdCard ?? this.citizenIdCard,
-      citizenIdCardIssueDate:
-      citizenIdCardIssueDate ?? this.citizenIdCardIssueDate,
+      citizenIdCardIssueDate: citizenIdCardIssueDate ?? this.citizenIdCardIssueDate,
       religion: religion ?? this.religion,
       accountBankId: accountBankId ?? this.accountBankId,
       accountBankName: accountBankName ?? this.accountBankName,
       hIId: hIId ?? this.hIId,
       hIExpireDate: hIExpireDate ?? this.hIExpireDate,
+      hIFreeIssue: hIFreeIssue ?? this.hIFreeIssue,
       specialization: specialization ?? this.specialization,
       schoolClass: schoolClass ?? this.schoolClass,
       trainingProgramPlan: trainingProgramPlan ?? this.trainingProgramPlan,
@@ -468,7 +425,6 @@ class StudentInformation {
       addressFrom: addressFrom ?? this.addressFrom,
       addressCity: addressCity ?? this.addressCity,
       addressDistrict: addressDistrict ?? this.addressDistrict,
-      addressSubDistrict: addressSubDistrict ?? this.addressSubDistrict,
       studentId: studentId ?? this.studentId,
     );
   }
@@ -482,9 +438,6 @@ class StudentInformation {
     result.addAll({'gender': gender});
     result.addAll({'ethnicity': ethnicity});
     result.addAll({'nationality': nationality});
-    result.addAll({'national_id_card': nationalIdCard});
-    result.addAll({'national_id_card_issue_date': nationalIdCardIssueDate});
-    result.addAll({'national_id_card_issue_place': nationalIdCardIssuePlace});
     result.addAll({'citizen_id_card': citizenIdCard});
     result.addAll({'citizen_id_card_issue_date': citizenIdCardIssueDate});
     result.addAll({'religion': religion});
@@ -492,20 +445,20 @@ class StudentInformation {
     result.addAll({'account_bank_name': accountBankName});
     result.addAll({'hi_id': hIId});
     result.addAll({'hi_expire_date': hIExpireDate});
+    result.addAll({'hi_free_issue': hIFreeIssue});
     result.addAll({'specialization': specialization});
     result.addAll({'school_class': schoolClass});
     result.addAll({'training_program_plan': trainingProgramPlan});
     result.addAll({'training_program_plan_2': trainingProgramPlan2});
     result.addAll({'school_email': schoolEmail});
     result.addAll({'personal_email': personalEmail});
-    result.addAll({'schoolEmailInitPass': schoolEmailInitPass});
+    result.addAll({'school_email_init_pass': schoolEmailInitPass});
     result.addAll({'facebook_url': facebookUrl});
     result.addAll({'phone_number': phoneNumber});
     result.addAll({'address': address});
     result.addAll({'address_from': addressFrom});
     result.addAll({'address_city': addressCity});
     result.addAll({'address_district': addressDistrict});
-    result.addAll({'address_sub_district': addressSubDistrict});
     result.addAll({'student_id': studentId});
 
     return result;
@@ -519,9 +472,6 @@ class StudentInformation {
       gender: map['gender'] ?? '',
       ethnicity: map['ethnicity'] ?? '',
       nationality: map['nationality'] ?? '',
-      nationalIdCard: map['national_id_card'] ?? '',
-      nationalIdCardIssueDate: map['national_id_card_issue_date'] ?? '',
-      nationalIdCardIssuePlace: map['national_id_card_issue_place'] ?? '',
       citizenIdCard: map['citizen_id_card'] ?? '',
       citizenIdCardIssueDate: map['citizen_id_card_issue_date'] ?? '',
       religion: map['religion'] ?? '',
@@ -529,32 +479,31 @@ class StudentInformation {
       accountBankName: map['account_bank_name'] ?? '',
       hIId: map['hi_id'] ?? '',
       hIExpireDate: map['hi_expire_date'] ?? '',
+      hIFreeIssue: bool.tryParse(map['hi_free_issue'] ?? '') ?? false,
       specialization: map['specialization'] ?? '',
       schoolClass: map['school_class'] ?? '',
       trainingProgramPlan: map['training_program_plan'] ?? '',
       trainingProgramPlan2: map['training_program_plan_2'] ?? '',
       schoolEmail: map['school_email'] ?? '',
       personalEmail: map['personal_email'] ?? '',
-      schoolEmailInitPass: map['schoolEmailInitPass'] ?? '',
+      schoolEmailInitPass: map['school_email_init_pass'] ?? '',
       facebookUrl: map['facebook_url'] ?? '',
       phoneNumber: map['phone_number'] ?? '',
       address: map['address'] ?? '',
       addressFrom: map['address_from'] ?? '',
       addressCity: map['address_city'] ?? '',
       addressDistrict: map['address_district'] ?? '',
-      addressSubDistrict: map['address_sub_district'] ?? '',
       studentId: map['student_id'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory StudentInformation.fromJson(String source) =>
-      StudentInformation.fromMap(json.decode(source));
+  factory StudentInformation.fromJson(String source) => StudentInformation.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'AccountInformation(name: $name, dateOfBirth: $dateOfBirth, birthPlace: $birthPlace, gender: $gender, ethnicity: $ethnicity, nationality: $nationality, nationalIdCard: $nationalIdCard, nationalIdCardIssueDate: $nationalIdCardIssueDate, nationalIdCardIssuePlace: $nationalIdCardIssuePlace, citizenIdCard: $citizenIdCard, citizenIdCardIssueDate: $citizenIdCardIssueDate, religion: $religion, accountBankId: $accountBankId, accountBankName: $accountBankName, hIId: $hIId, hIExpireDate: $hIExpireDate, specialization: $specialization, schoolClass: $schoolClass, trainingProgramPlan: $trainingProgramPlan, trainingProgramPlan2: $trainingProgramPlan2, schoolEmail: $schoolEmail, personalEmail: $personalEmail, schoolEmailInitPass: $schoolEmailInitPass, facebookUrl: $facebookUrl, phoneNumber: $phoneNumber, address: $address, addressFrom: $addressFrom, addressCity: $addressCity, addressDistrict: $addressDistrict, addressSubDistrict: $addressSubDistrict, studentId: $studentId)';
+    return 'AccountInformation(name: $name, dateOfBirth: $dateOfBirth, birthPlace: $birthPlace, gender: $gender, ethnicity: $ethnicity, nationality: $nationality, citizenIdCard: $citizenIdCard, citizenIdCardIssueDate: $citizenIdCardIssueDate, religion: $religion, accountBankId: $accountBankId, accountBankName: $accountBankName, hIId: $hIId, hIExpireDate: $hIExpireDate, hIFreeIssue: $hIFreeIssue, specialization: $specialization, schoolClass: $schoolClass, trainingProgramPlan: $trainingProgramPlan, trainingProgramPlan2: $trainingProgramPlan2, schoolEmail: $schoolEmail, personalEmail: $personalEmail, schoolEmailInitPass: $schoolEmailInitPass, facebookUrl: $facebookUrl, phoneNumber: $phoneNumber, address: $address, addressFrom: $addressFrom, addressCity: $addressCity, addressDistrict: $addressDistrict, studentId: $studentId)';
   }
 
   @override
@@ -568,9 +517,6 @@ class StudentInformation {
         other.gender == gender &&
         other.ethnicity == ethnicity &&
         other.nationality == nationality &&
-        other.nationalIdCard == nationalIdCard &&
-        other.nationalIdCardIssueDate == nationalIdCardIssueDate &&
-        other.nationalIdCardIssuePlace == nationalIdCardIssuePlace &&
         other.citizenIdCard == citizenIdCard &&
         other.citizenIdCardIssueDate == citizenIdCardIssueDate &&
         other.religion == religion &&
@@ -591,43 +537,39 @@ class StudentInformation {
         other.addressFrom == addressFrom &&
         other.addressCity == addressCity &&
         other.addressDistrict == addressDistrict &&
-        other.addressSubDistrict == addressSubDistrict &&
         other.studentId == studentId;
   }
 
   @override
   int get hashCode {
     return name.hashCode ^
-    dateOfBirth.hashCode ^
-    birthPlace.hashCode ^
-    gender.hashCode ^
-    ethnicity.hashCode ^
-    nationality.hashCode ^
-    nationalIdCard.hashCode ^
-    nationalIdCardIssueDate.hashCode ^
-    nationalIdCardIssuePlace.hashCode ^
-    citizenIdCard.hashCode ^
-    citizenIdCardIssueDate.hashCode ^
-    religion.hashCode ^
-    accountBankId.hashCode ^
-    accountBankName.hashCode ^
-    hIId.hashCode ^
-    hIExpireDate.hashCode ^
-    specialization.hashCode ^
-    schoolClass.hashCode ^
-    trainingProgramPlan.hashCode ^
-    trainingProgramPlan2.hashCode ^
-    schoolEmail.hashCode ^
-    personalEmail.hashCode ^
-    schoolEmailInitPass.hashCode ^
-    facebookUrl.hashCode ^
-    phoneNumber.hashCode ^
-    address.hashCode ^
-    addressFrom.hashCode ^
-    addressCity.hashCode ^
-    addressDistrict.hashCode ^
-    addressSubDistrict.hashCode ^
-    studentId.hashCode;
+        dateOfBirth.hashCode ^
+        birthPlace.hashCode ^
+        gender.hashCode ^
+        ethnicity.hashCode ^
+        nationality.hashCode ^
+        citizenIdCard.hashCode ^
+        citizenIdCardIssueDate.hashCode ^
+        religion.hashCode ^
+        accountBankId.hashCode ^
+        accountBankName.hashCode ^
+        hIId.hashCode ^
+        hIExpireDate.hashCode ^
+        hIFreeIssue.hashCode ^
+        specialization.hashCode ^
+        schoolClass.hashCode ^
+        trainingProgramPlan.hashCode ^
+        trainingProgramPlan2.hashCode ^
+        schoolEmail.hashCode ^
+        personalEmail.hashCode ^
+        schoolEmailInitPass.hashCode ^
+        facebookUrl.hashCode ^
+        phoneNumber.hashCode ^
+        address.hashCode ^
+        addressFrom.hashCode ^
+        addressCity.hashCode ^
+        addressDistrict.hashCode ^
+        studentId.hashCode;
   }
 }
 
@@ -686,8 +628,7 @@ class TrainingSummary {
 
   String toJson() => json.encode(toMap());
 
-  factory TrainingSummary.fromJson(String source) =>
-      TrainingSummary.fromMap(json.decode(source));
+  factory TrainingSummary.fromJson(String source) => TrainingSummary.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -708,11 +649,7 @@ class TrainingSummary {
 
   @override
   int get hashCode {
-    return schoolYearStart.hashCode ^
-    schoolYearCurrent.hashCode ^
-    creditCollected.hashCode ^
-    avgTrainingScore4.hashCode ^
-    avgSocial.hashCode;
+    return schoolYearStart.hashCode ^ schoolYearCurrent.hashCode ^ creditCollected.hashCode ^ avgTrainingScore4.hashCode ^ avgSocial.hashCode;
   }
 }
 
@@ -756,11 +693,10 @@ class GraduateStatus {
       hasSigEnglish: hasSigEnglish ?? this.hasSigEnglish,
       hasSigIT: hasSigIT ?? this.hasSigIT,
       hasQualifiedGraduate: hasQualifiedGraduate ?? this.hasQualifiedGraduate,
-      rewardsInfo: info1 ?? this.rewardsInfo,
-      disciplineInfo: info2 ?? this.disciplineInfo,
-      eligibleGraduationThesisStatus: info3 ?? this.eligibleGraduationThesisStatus,
-      eligibleGraduationStatus:
-      approveGraduateProcessInfo ?? this.eligibleGraduationStatus,
+      rewardsInfo: info1 ?? rewardsInfo,
+      disciplineInfo: info2 ?? disciplineInfo,
+      eligibleGraduationThesisStatus: info3 ?? eligibleGraduationThesisStatus,
+      eligibleGraduationStatus: approveGraduateProcessInfo ?? eligibleGraduationStatus,
     );
   }
 
@@ -796,8 +732,7 @@ class GraduateStatus {
 
   String toJson() => json.encode(toMap());
 
-  factory GraduateStatus.fromJson(String source) =>
-      GraduateStatus.fromMap(json.decode(source));
+  factory GraduateStatus.fromJson(String source) => GraduateStatus.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -823,14 +758,14 @@ class GraduateStatus {
   @override
   int get hashCode {
     return hasSigGDTC.hashCode ^
-    hasSigGDQP.hashCode ^
-    hasSigEnglish.hashCode ^
-    hasSigIT.hashCode ^
-    hasQualifiedGraduate.hashCode ^
-    rewardsInfo.hashCode ^
-    disciplineInfo.hashCode ^
-    eligibleGraduationThesisStatus.hashCode ^
-    eligibleGraduationStatus.hashCode;
+        hasSigGDQP.hashCode ^
+        hasSigEnglish.hashCode ^
+        hasSigIT.hashCode ^
+        hasQualifiedGraduate.hashCode ^
+        rewardsInfo.hashCode ^
+        disciplineInfo.hashCode ^
+        eligibleGraduationThesisStatus.hashCode ^
+        eligibleGraduationStatus.hashCode;
   }
 }
 
@@ -997,8 +932,7 @@ class SubjectResult {
 
   String toJson() => json.encode(toMap());
 
-  factory SubjectResult.fromJson(String source) =>
-      SubjectResult.fromMap(json.decode(source));
+  factory SubjectResult.fromJson(String source) => SubjectResult.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -1034,24 +968,24 @@ class SubjectResult {
   @override
   int get hashCode {
     return index.hashCode ^
-    schoolYear.hashCode ^
-    isExtendedSemester.hashCode ^
-    id.hashCode ^
-    name.hashCode ^
-    credit.hashCode ^
-    pointFormula.hashCode ^
-    pointBT.hashCode ^
-    pointBV.hashCode ^
-    pointCC.hashCode ^
-    pointCK.hashCode ^
-    pointGK.hashCode ^
-    pointQT.hashCode ^
-    pointTH.hashCode ^
-    pointTT.hashCode ^
-    resultT4.hashCode ^
-    resultT10.hashCode ^
-    resultByCharacter.hashCode ^
-    isReStudy.hashCode;
+        schoolYear.hashCode ^
+        isExtendedSemester.hashCode ^
+        id.hashCode ^
+        name.hashCode ^
+        credit.hashCode ^
+        pointFormula.hashCode ^
+        pointBT.hashCode ^
+        pointBV.hashCode ^
+        pointCC.hashCode ^
+        pointCK.hashCode ^
+        pointGK.hashCode ^
+        pointQT.hashCode ^
+        pointTH.hashCode ^
+        pointTT.hashCode ^
+        resultT4.hashCode ^
+        resultT10.hashCode ^
+        resultByCharacter.hashCode ^
+        isReStudy.hashCode;
   }
 }
 
@@ -1083,30 +1017,25 @@ class TrainingResult {
 
     result.addAll({'training_summary': trainingSummary.toMap()});
     result.addAll({'graduate_status': graduateStatus.toMap()});
-    result.addAll({
-      'subject_result': subjectResultList.map((x) => x.toMap()).toList()
-    });
+    result.addAll({'subject_result': subjectResultList.map((x) => x.toMap()).toList()});
 
     return result;
   }
 
   factory TrainingResult.fromMap(Map<String, dynamic> map) {
     return TrainingResult(
-      trainingSummary: TrainingSummary.fromMap(map['training_summary']),
-      graduateStatus: GraduateStatus.fromMap(map['graduate_status']),
-      subjectResultList: List<SubjectResult>.from(
-          map['subject_result']?.map((x) => SubjectResult.fromMap(x))),
+      trainingSummary: TrainingSummary.fromMap(map['training_summary'] ?? {}),
+      graduateStatus: GraduateStatus.fromMap(map['graduate_status'] ?? {}),
+      subjectResultList: (map['subject_result'] as List<dynamic>? ?? []).map((x) => SubjectResult.fromMap(x)).toList(),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory TrainingResult.fromJson(String source) =>
-      TrainingResult.fromMap(json.decode(source));
+  factory TrainingResult.fromJson(String source) => TrainingResult.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'AccountTrainingStatus(trainingSummary: $trainingSummary, graduateStatus: $graduateStatus, subjectResultList: $subjectResultList)';
+  String toString() => 'AccountTrainingStatus(trainingSummary: $trainingSummary, graduateStatus: $graduateStatus, subjectResultList: $subjectResultList)';
 
   @override
   bool operator ==(Object other) {
@@ -1119,8 +1048,5 @@ class TrainingResult {
   }
 
   @override
-  int get hashCode =>
-      trainingSummary.hashCode ^
-      graduateStatus.hashCode ^
-      subjectResultList.hashCode;
+  int get hashCode => trainingSummary.hashCode ^ graduateStatus.hashCode ^ subjectResultList.hashCode;
 }
